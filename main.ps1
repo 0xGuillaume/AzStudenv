@@ -1,12 +1,18 @@
 #!/usr/bin/pwsh
-Connect-AzAccount
+
+# Parse json config file
+function ConfigParser {
+
+	$config = Get-Content "config.json" | Out-String | ConvertFrom-Json
+	return $config
+}
 
 
 # Create Azure Resource Group
 function AzResourceGroup {
 	
 	$name_rg = "Mon_Super_RG"
-	New-AzResourceGroup -Name $name_rg -Location 'FranceCentral'
+	New-AzResourceGroup -Name $name_rg -Location $config.Location
 	
 	return $name_rg | Out-String
 }
@@ -14,11 +20,12 @@ function AzResourceGroup {
 
 # Create Azure Virtual Network
 function AzVnet {
+
 	$vnet = @{
-		Name = 'myVNet'
-		ResourceGroupName = 'Mon_Super_RG'#AzResourceGroup
-		Location = 'FranceCentral'
-		AddressPrefix = '10.0.0.0/16'
+		Name 				= 'myVNet'
+		ResourceGroupName 	= AzResourceGroup
+		Location 			= $config.location
+		AddressPrefix 		= '10.0.0.0/16'
 	}
 	$virtualNetwork = New-AzVirtualNetwork @vnet
 }
@@ -26,18 +33,25 @@ function AzVnet {
 
 # Create Azure Virtual Machines
 function AzVm {
+
 	New-AzVm `
-		-ResourceGroupName AzResourceGroup` # | Out-String`
-		-Name 'myVM' `
-		-Location 'FranceCentral' `
-		-VirtualNetworkName 'myVnet' `
-		-SubnetName 'mySubnet' `
-		-SecurityGroupName 'myNetworkSecurityGroup' `
-		-PublicIpAddressName 'myPublicIpAddress' `
-		-OpenPorts 80,3389
+		-ResourceGroupName 		AzResourceGroup `
+		-Name 					'myVM' `
+		-Location 				$config.location `
+		-VirtualNetworkName 	'myVnet' `
+		-SubnetName 			'mySubnet' `
+		-SecurityGroupName  	'myNetworkSecurityGroup' `
+		-PublicIpAddressName 	'myPublicIpAddress' `
+		-OpenPorts 				80,3389
 }
 
-#AzResourceGroup
-AzVnet
 
-#Write-Host "Hello world"
+# =======================================
+# Main
+
+$config = ConfigParser
+Write-Host $config.location
+
+#Connect-AzAccount
+#AzResourceGroup
+#AzVnet
