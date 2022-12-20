@@ -21,13 +21,29 @@ function AzResourceGroup {
 # Create Azure Virtual Network
 function AzVnet {
 
+	$name_vnet = "MyVnet"
 	$vnet = @{
-		Name 				= 'myVNet'
+		Name 				= $name_vnet
 		ResourceGroupName 	= AzResourceGroup
 		Location 			= $config.location
 		AddressPrefix 		= '10.0.0.0/16'
 	}
 	$virtualNetwork = New-AzVirtualNetwork @vnet
+
+	return $name_vnet | Out-String
+}
+
+
+# Create Azure Subnet
+function AzSubnet {
+}
+
+# Create Azure Network Interface
+function AzNetworkInterface {
+}
+
+# Create Azure Public Ip Address
+function AzPublicIpAddress {
 }
 
 
@@ -35,14 +51,14 @@ function AzVnet {
 function AzVm {
 
 	New-AzVm `
-		-ResourceGroupName 		AzResourceGroup `
-		-Name 					'myVM' `
-		-Location 				$config.location `
-		-VirtualNetworkName 	'myVnet' `
-		-SubnetName 			'mySubnet' `
-		-SecurityGroupName  	'myNetworkSecurityGroup' `
-		-PublicIpAddressName 	'myPublicIpAddress' `
-		-OpenPorts 				80,3389
+		-ResourceGroupName AzResourceGroup `
+		-Name 'myVM' `
+		-Location $config.location `
+		-VirtualNetworkName	AzVnet
+		-SubnetName 'mySubnet' `
+		-SecurityGroupName 'myNetworkSecurityGroup' `
+		-PublicIpAddressName 'myPublicIpAddress' `
+		-OpenPorts 22, 80
 }
 
 
