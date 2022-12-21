@@ -1,4 +1,5 @@
 #!/usr/bin/pwsh
+# Az Studenv
 
 # Parse json config file
 function ConfigParser {
@@ -8,34 +9,50 @@ function ConfigParser {
 }
 
 
+
 # Create Azure Resource Group
 function AzResourceGroup {
 	
-	$name_rg = "Mon_Super_RG"
-	New-AzResourceGroup -Name $name_rg -Location $config.Location
+	$name = "Mon_Super_RG"
+	$resourceGroup = New-AzResourceGroup -Name $name -Location $config.Location
 	
-	return $name_rg | Out-String
+	return $resourceGroup
 }
 
 
 # Create Azure Virtual Network
 function AzVnet {
 
-	$name_vnet = "MyVnet"
+	$vnetName = "MyVnet"
+	$resourceGroup = AzResourceGroup
+
 	$vnet = @{
-		Name 				= $name_vnet
-		ResourceGroupName 	= AzResourceGroup
+		Name 				= $vnetName
+		ResourceGroupName 	= $resourceGroup.ResourceGroupName
 		Location 			= $config.location
 		AddressPrefix 		= '10.0.0.0/16'
 	}
 	$virtualNetwork = New-AzVirtualNetwork @vnet
 
-	return $name_vnet | Out-String
+	return $virtualNetwork
 }
 
 
 # Create Azure Subnet
 function AzSubnet {
+
+	$subnetName = "MonSubnet"
+	$virtualNetwork = AzVnet
+
+	$subnet = @{
+		Name = $subnetName
+		VirtualNetwork = $virtualNetwork.Name
+		AddressPrefix = "10.0.0.0/24"
+	}
+
+	#Add-AzVirtualNetworkSubnetConfig -Name $subnetName -VirtualNetwork $virtualNetwork -AddressPrefix "10.0.0.0/24"
+	Add-AzVirtualNetworkSubnetConfig @subnet
+	$virtualNetwork = Set-AzVirtualNetwork
 }
 
 # Create Azure Network Interface
@@ -66,8 +83,7 @@ function AzVm {
 # Main
 
 $config = ConfigParser
-Write-Host $config.location
-
-#Connect-AzAccount
+Connect-AzAccount 
 #AzResourceGroup
 #AzVnet
+AzSubnet
