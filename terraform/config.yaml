@@ -1,0 +1,15 @@
+# AzStudenv configuration file
+azure:
+  subscription: ""
+  location: "FranceCentral"
+  vm:
+    size: 
+      linux: "Standard_B1s"
+    images:
+      - "test"    
+  suffix: ""   
+  instances:
+    - "AZLUX01"
+    - "AZLUX02"
+    - "AZLUX03"
+
