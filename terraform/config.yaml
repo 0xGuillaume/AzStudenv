@@ -1,13 +1,28 @@
 # AzStudenv configuration file
 azure:
+  poc: "POC_Linuxvms"
   subscription: ""
   location: "FranceCentral"
   vm:
     size: 
       linux: "Standard_B1s"
     images:
-      - "test"    
-  suffix: ""   
+      name: "debian"
+        publisher: "debian"      
+        offer: "debian-11"
+        sku: "11"
+        version: "latest" 
+      name: "rocky"
+        publisher: "erockyenterprisesoftwarefoundationinc1653071250513"      
+        offer: "rockylinux-9"
+        sku: "rockylinux-9"
+        version: "latest" 
+      name: "ubuntu"
+        publisher: "Canonical"      
+        offer: "UbuntuServer"
+        sku: "22.04-LTS"
+        version: "latest" 
+  suffix: "POC"   
   instances:
     - "AZLUX01"
     - "AZLUX02"
