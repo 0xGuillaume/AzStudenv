@@ -28,7 +28,7 @@ class ConfigCompliant:
     """Checks if configuration is compliant.
 
     Custom class with several methods to check wether or not
-    yaml configuration files is well filled. Checks list :
+    yaml configuration file is well filled. Checks list :
         - SSH id_rsa key.
         - Azure student subscription.
         - Admin username compliance.
@@ -36,8 +36,9 @@ class ConfigCompliant:
     The class returns a boolean value that indicates if
     compliant checks are successfull or not.
 
-    The main function waits for `True` value in order
-    to run Terraform scripts.
+    The main function waits for `True` in order
+    to run Terraform scripts. `False` will ask for
+    the user to fix required values.
     """
 
     def __init__(self):
