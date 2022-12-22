@@ -24,7 +24,6 @@ provider "azurerm" {
 
 # Resource Group 
 resource "azurerm_resource_group" "main" {
-	#for_each 			= toset(["Mon_RG_01", "Mon_RG_02", "Mon_RG_03"])
 	name 				= local.config["poc"]
 	location 			= local.config["location"]
 }
