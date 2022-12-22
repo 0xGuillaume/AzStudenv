@@ -58,6 +58,26 @@ resource "azurerm_public_ip" "main" {
 }
 
 
+# Create Network Security Group and Rules
+resource "azurerm_network_security_group" "main" {
+	name 				= "${local.config["suffix"]}_NSG"
+	location            = azurerm_resource_group.main.location
+	resource_group_name = azurerm_resource_group.main.name
+
+	security_rule {
+		name                       = "SSH"
+		priority                   = 1001
+		direction                  = "Inbound"
+		access                     = "Allow"
+		protocol                   = "Tcp"
+		source_port_range          = "*"
+		destination_port_range     = "22"
+		source_address_prefix      = "*"
+		destination_address_prefix = "*"
+	}
+}
+
+
 # Network Interface Cards
 resource "azurerm_network_interface" "main" {
 	for_each 			= toset(local.config.instances)
@@ -74,41 +94,56 @@ resource "azurerm_network_interface" "main" {
 }
 
 
-# Virtual Machines
-resource "azurerm_virtual_machine" "main" {
-	for_each 			= toset(local.config.instances)
-	name                  = each.key
-	location              = azurerm_resource_group.main.location
+# Connect the security group to the network interface
+resource "azurerm_network_interface_security_group_association" "main" {
+	for_each 					= toset(local.config.instances)
+	network_interface_id      	= azurerm_network_interface.main["${each.key}"].id
+	network_security_group_id 	= azurerm_network_security_group.main.id
+}
+
+
+resource "azurerm_ssh_public_key" "example" {
+	for_each			= toset(local.config.instances)
+	name                = "${each.key}_SSHKey"
 	resource_group_name   = azurerm_resource_group.main.name
-	network_interface_ids = [azurerm_network_interface.main["${each.key}"].id]
-	vm_size               = local.config["vm"]["size"]["linux"]
+	location              = azurerm_resource_group.main.location
+	public_key          = file(local.config["idrsa"])
+}
 
-	delete_os_disk_on_termination = true
-	delete_data_disks_on_termination = true
 
-	storage_image_reference {
+# Virtual Machines
+resource "azurerm_linux_virtual_machine" "main" {
+	for_each 			  = toset(local.config.instances)
+	name                  = each.key
+	resource_group_name   = azurerm_resource_group.main.name
+	location              = azurerm_resource_group.main.location
+	size               	  = local.config["vm"]["size"]
+	admin_username 		  = local.config["vm"]["admin_username"]
+	network_interface_ids = [
+		azurerm_network_interface.main["${each.key}"].id
+	]
+
+	#delete_os_disk_on_termination = true
+	#delete_data_disks_on_termination = true
+
+	computer_name  = "${each.key}"
+	disable_password_authentication = true
+
+	source_image_reference {
 		publisher = local.image["debian"]["publisher"] 
 		offer     = local.image["debian"]["offer"]
 		sku       = local.image["debian"]["sku"]
 		version   = local.image["debian"]["version"]
 	}
 
-	storage_os_disk {
-		name              = "disk_static_1"
-		caching           = "ReadWrite"
-		create_option     = "FromImage"
-		managed_disk_type = "Standard_LRS"
+	admin_ssh_key {
+		username 	= local.config["vm"]["admin_username"]
+		public_key  = file(local.config["idrsa"])
 	}
 
-	os_profile {
-		computer_name  = "${each.key}"
-		admin_username = "user"
-		admin_password = "password"
-		# custom_data    = data.template_file.frontend_static_1.rendered
-	}
-
-	os_profile_linux_config {
-		disable_password_authentication = false
+	os_disk {
+		caching = "ReadWrite"
+		storage_account_type = "Standard_LRS"
 	}
 }
 
