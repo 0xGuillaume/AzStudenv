@@ -29,6 +29,8 @@ resource "azurerm_resource_group" "main" {
 	location 			= local.config["location"]
 }
 
+
+# SSH Key
 resource "azurerm_ssh_public_key" "example" {
 	for_each			= toset(local.config.instances)
 	name                = "${each.key}_SSHKey"
