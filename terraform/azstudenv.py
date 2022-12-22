@@ -1,3 +1,4 @@
+"""Module AzStudenv."""
 import argparse
 import string
 import yaml
@@ -22,8 +23,21 @@ class Yaml:
 
 CONFIG = Yaml.read("config.yaml")["azure"]
 
-class Controls:
-    """
+
+class ConfigCompliant:
+    """Checks if configuration is compliant.
+
+    Custom class with several methods to check wether or not
+    yaml configuration files is well filled. Checks list :
+        - SSH id_rsa key.
+        - Azure student subscription.
+        - Admin username compliance.
+
+    The class returns a boolean value that indicates if
+    compliant checks are successfull or not.
+
+    The main function waits for `True` value in order
+    to run Terraform scripts.
     """
 
     def __init__(self):
@@ -41,7 +55,15 @@ class Controls:
         """Check if a given path and file exists."""
 
         if not Path(file).is_file(): 
-            return print("[ERROR] File '{file} does not exist.'")
+            print("[ERROR] File '{file} does not exist.'")
+            return False
+
+    @classmethod
+    def subscription(self):
+        """Check if subscription ID has been filled."""
+
+        if not self.key_empty():
+            return False
         
     @classmethod
     def admin_username_is_valid(self):
@@ -62,12 +84,15 @@ class Controls:
         ] 
 
         if len(username) < 1 or len(username) > 64:
-            return print(f"[ERROR] Admin username value must be between 1 and 64 characters long [Length: {len(username)}].")
+            print(f"[ERROR] Admin username value must be between 1 and 64 characters long [Length: {len(username)}].")
+            return False
 
         if username in banned_username:
-            return print(f"[ERROR] Current admin username : '{username}' is a banned value by Azure.")
+            print(f"[ERROR] Current admin username : '{username}' is a banned value by Azure.")
+            return False
 
         for count, char in enumerate(username):
             if char not in authorized_chars:
-                return print(f"[ERROR] '{char}' in '{username}' [Position: {count + 1}] is not an authorized character for admin_username.")
+                print(f"[ERROR] '{char}' in '{username}' [Position: {count + 1}] is not an authorized character for admin_username.")
+                return False
 
