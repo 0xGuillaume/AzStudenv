@@ -11,6 +11,7 @@ terraform {
 # Locals Variable : Load config file
 locals {
 	config = yamldecode(file("./config.yaml"))["azure"]
+	image = yamldecode(file("./config.yaml"))["azure"]["vm"]["images"]
 }
 
 
@@ -68,7 +69,46 @@ resource "azurerm_network_interface" "main" {
 		name                          = "internal"
 		subnet_id                     = azurerm_subnet.main.id
 		private_ip_address_allocation = "Dynamic"
-		public_ip_address_id		  = azurerm_public_ip.main["${each.key}"]
+		public_ip_address_id		  = azurerm_public_ip.main["${each.key}"].id
+	}
+}
+
+
+# Virtual Machines
+resource "azurerm_virtual_machine" "main" {
+	for_each 			= toset(local.config.instances)
+	name                  = each.key
+	location              = azurerm_resource_group.main.location
+	resource_group_name   = azurerm_resource_group.main.name
+	network_interface_ids = [azurerm_network_interface.main["${each.key}"].id]
+	vm_size               = local.config["vm"]["size"]["linux"]
+
+	delete_os_disk_on_termination = true
+	delete_data_disks_on_termination = true
+
+	storage_image_reference {
+		publisher = local.image["debian"]["publisher"] 
+		offer     = local.image["debian"]["offer"]
+		sku       = local.image["debian"]["sku"]
+		version   = local.image["debian"]["version"]
+	}
+
+	storage_os_disk {
+		name              = "disk_static_1"
+		caching           = "ReadWrite"
+		create_option     = "FromImage"
+		managed_disk_type = "Standard_LRS"
+	}
+
+	os_profile {
+		computer_name  = "${each.key}"
+		admin_username = "user"
+		admin_password = "password"
+		# custom_data    = data.template_file.frontend_static_1.rendered
+	}
+
+	os_profile_linux_config {
+		disable_password_authentication = false
 	}
 }
 
