@@ -1,8 +1,8 @@
 """Module AzStudenv."""
 import argparse
 import string
-import yaml
 from pathlib import Path
+import yaml
 
 
 class Yaml:
@@ -44,32 +44,46 @@ class ConfigCompliant:
     def __init__(self):
         """Init Controls class."""
 
-    @classmethod
-    def key_empty(self, key:str):
+
+    def key_empty(self, key:str) -> bool:
         """Check if a given Yaml Key exists."""
 
         if not key:
-            return False
+            return True
+        return False
 
-    @classmethod
-    def file_exists(self, file:str):
+
+    def file_exists(self, file:str) -> bool:
         """Check if a given path and file exists."""
 
-        if not Path(file).is_file(): 
-            print("[ERROR] File '{file} does not exist.'")
+        if not Path(file).is_file():
+            print(f"[ERROR] File '{file} does not exist.'")
             return False
+        return True
 
-    @classmethod
-    def subscription(self):
+
+    def subscription_is_valid(self, key:str) -> bool:
         """Check if subscription ID has been filled."""
 
-        if not self.key_empty():
+        if self.key_empty(key):
             return False
-        
-    @classmethod
-    def admin_username_is_valid(self):
+        return True
+
+
+    def id_rsa_is_valid(self, key:str) -> bool:
+        """Checks about ssh id_rsa key"""
+
+        if self.key_empty(key):
+            return False
+
+        if not self.file_exists(key):
+            return False
+        return True
+
+
+    def admin_username_is_valid(self) -> bool:
         """Check if the given admin username is azure compliant."""
-        
+
         username = CONFIG["vm"]["admin_username"]
 
         authorized_chars = string.ascii_lowercase
@@ -78,11 +92,11 @@ class ConfigCompliant:
         authorized_chars += "-_"
 
         banned_username = [
-                "administrator", "admin", "user", "user1", "test", "user2", "test1", 
-                "user3", "admin1", "1", "123", "a", "actuser", "adm", "admin2", "aspnet", 
-                "backup", "console", "david", "guest", "john", "owner", "root", "server", 
+                "administrator", "admin", "user", "user1", "test", "user2", "test1",
+                "user3", "admin1", "1", "123", "a", "actuser", "adm", "admin2", "aspnet",
+                "backup", "console", "david", "guest", "john", "owner", "root", "server",
                 "sql", "support", "support_388945a0", "sys", "test2", "test3", "user4", "user5"
-        ] 
+        ]
 
         if len(username) < 1 or len(username) > 64:
             print(f"[ERROR] Admin username value must be between 1 and 64 characters long [Length: {len(username)}].")
@@ -96,4 +110,39 @@ class ConfigCompliant:
             if char not in authorized_chars:
                 print(f"[ERROR] '{char}' in '{username}' [Position: {count + 1}] is not an authorized character for admin_username.")
                 return False
+        return True
 
+
+    def checks(self) -> bool:
+        """Checks all three tests"""
+
+        subscription = self.subscription_is_valid(CONFIG["subscription"])
+        rsa = self.id_rsa_is_valid(CONFIG["idrsa"])
+        admin_username = self.admin_username_is_valid()
+
+        return subscription == rsa == admin_username
+
+
+# =======================================================================
+
+
+parser = argparse.ArgumentParser(
+            prog = "AzStudenv",
+            description = "What the programs does.",
+        )
+
+parser.add_argument("-n",
+            choices=range(1, 3 + 1),
+            required=True,
+            help=""
+        )
+
+args = parser.parse_args()
+
+print(args.n)
+
+
+
+
+
+print(ConfigCompliant().checks())
