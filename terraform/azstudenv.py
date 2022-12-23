@@ -132,17 +132,80 @@ parser = argparse.ArgumentParser(
         )
 
 parser.add_argument("-n",
-            choices=range(1, 3 + 1),
+            choices=[str(digit) for digit in range(1, 3 + 1)],
             required=True,
             help=""
         )
 
+parser.add_argument("-i", "--image",
+            choices=["debian", "ubuntu", "rocky"],
+            required=True,
+            nargs="*",
+            help=""
+        )
+
+parser.add_argument("-p", "--poc",
+        required=True,
+        help=""
+    )
+
 args = parser.parse_args()
+"""
+Mettre le check des arguments et la configuration
+de config.yaml dans une class : ConfigSetup
+    - arguments_check() = images_choices_is_valid()
+    - vm_name(image, nb) = attribue un nom au vm 
+    - poc_name(arg.poc) = defini le nom du poc
+    - suffix() = prend le prefix selon le nom du poc
 
-print(args.n)
+Arguments :
+    - Rajouter un argument poc
+    - Faire un test pour voir si l'argument est compliant (seulement des lettre miniscules)
+"""
+
+
+class ConfigSetup:
+    """
+    """
+
+    def __init__(self):
+        """"""
+
+
+    def vm_name(self):
+        """"""
+
+    
+    def poc_name(self):
+        """"""
+
+
+    def suffix(self):
+        """"""
+
+
+
+def images_choice_is_valid() -> bool:
+    """"""
+
+    images = args.image
+    images_count = int(args.n)
+
+    if len(images) == 2 and images_count == 3:
+        print("Si vous souhaitez creer 3 vms, il vous faut preciser un os pour les 3 ou un os par vm")
+        return False
+
+    if len(images) > images_count:
+        print("Il y a plus d'image en argument que de nombre de vm a creer")
+        return False
+
+def config_setup():
+    """"""
 
 
 
 
 
-print(ConfigCompliant().checks())
+images_choice_is_valid()
+
+#print(ConfigCompliant().checks())
