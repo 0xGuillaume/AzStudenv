@@ -184,6 +184,21 @@ class ConfigSetup:
         """"""
 
 
+class ArgumentsCheck:
+    """
+    """
+
+    def __init__(self):
+        """"""
+
+
+    def poc_name(self):
+        """"""
+
+
+    def images_choice(self):        
+        """"""
+
 
 def images_choice_is_valid() -> bool:
     """"""
@@ -198,9 +213,6 @@ def images_choice_is_valid() -> bool:
     if len(images) > images_count:
         print("Il y a plus d'image en argument que de nombre de vm a creer")
         return False
-
-def config_setup():
-    """"""
 
 
 
