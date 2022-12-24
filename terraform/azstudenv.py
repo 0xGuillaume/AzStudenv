@@ -22,14 +22,14 @@ class Yaml:
     
 
     @classmethod
-    def write(file:str, data:dict) -> None:
+    def write(cls, file:str, data:dict) -> None:
         """Write into a yaml file."""
 
         with open(file, "w") as file_:
             yaml.dump(data, file_, default_flow_style=False)
 
 
-CONFIG = Yaml.read("config.yaml")["azure"]
+CONFIG = Yaml.read("config.yaml")
 
 
 class ConfigCompliant:
@@ -92,7 +92,7 @@ class ConfigCompliant:
     def admin_username_is_valid(self) -> bool:
         """Check if the given admin username is azure compliant."""
 
-        username = CONFIG["vm"]["admin_username"]
+        username = CONFIG["azure"]["vm"]["admin_username"]
 
         authorized_chars = string.ascii_lowercase
         authorized_chars += string.ascii_uppercase
@@ -124,8 +124,8 @@ class ConfigCompliant:
     def checks(self) -> bool:
         """Checks all three tests"""
 
-        subscription = self.subscription_is_valid(CONFIG["subscription"])
-        rsa = self.id_rsa_is_valid(CONFIG["idrsa"])
+        subscription = self.subscription_is_valid(CONFIG["azure"]["subscription"])
+        rsa = self.id_rsa_is_valid(CONFIG["azure"]["idrsa"])
         admin_username = self.admin_username_is_valid()
 
         return subscription == rsa == admin_username
@@ -140,9 +140,21 @@ class ConfigSetup:
     """
 
     def __init__(self, args:object):
-        """"""
+        """Inits ConfigSetup class."""
 
         self.args = args
+        self.conf = CONFIG
+
+    def clear(self) -> None:
+        """Clear specific YAML config keys before dumping new data in."""
+
+        conf = self.conf
+        conf["azure"]["poc"] = ""
+        conf["azure"]["suffix"] = ""
+        conf["azure"]["instances"] = []
+        self.conf = conf
+
+        Yaml.write("config.yaml", self.conf)
 
 
     def hostnames(self) -> dict:
@@ -165,7 +177,7 @@ class ConfigSetup:
             index = indexes[vm]
             hostname = f"AZUX{image}0{index}"
 
-            hostnames_[hostname] = images[vm]
+            #hostnames_[hostname] = images[vm]
 
         return hostnames_
 
@@ -259,4 +271,5 @@ if __name__ == "__main__":
         print("Argument checking fail")
 
     config = ConfigSetup(arguments)
+    config.clear()
     config.hostnames()
