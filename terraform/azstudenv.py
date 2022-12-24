@@ -126,34 +126,52 @@ class ConfigCompliant:
 # =======================================================================
 
 
-"""
-Mettre le check des arguments et la configuration
-de config.yaml dans une class : ConfigSetup
-    - arguments_check() = images_choices_is_valid()
-    - vm_name(image, nb) = attribue un nom au vm 
-    - poc_name(arg.poc) = defini le nom du poc
-    - suffix() = prend le prefix selon le nom du poc
-"""
-
-
 class ConfigSetup:
     """
     """
 
-    def __init__(self):
+    def __init__(self, args:object):
         """"""
 
+        self.args = args
 
-    def vm_name(self):
-        """"""
 
+    def hostnames(self) -> dict:
+        """Set hostname and ISO image for Az virtual machines."""
+
+        images = self.args.image
+        vms = int(self.args.n)
+        hostnames_ = dict()
+
+        if vms == len(images):
+            count = list(range(0, vms))
+            indexes = [1] * vms
+    
+        elif vms > len(images):
+            count = [0] * vms
+            indexes = list(range(1, vms + 1))
+    
+        for vm in range(0, vms):
+            image = images[count[vm]][:3].upper()
+            index = indexes[vm]
+            hostname = f"AZUX{image}0{index}"
+
+            hostnames_[hostname] = images[vm]
+
+        return hostnames_
+    
     
     def poc_name(self):
-        """"""
+        """Defines the POC name for Azure resource group."""
+
+        name = self.args.poc
+        return f"POC_{name.capitalize()}"
 
 
     def suffix(self):
-        """"""
+        """Define suffix for Azure resources based on first 3 chars of the POC name."""
+
+        return self.args.poc[:3].upper()
 
 
 class ArgumentsCheck:
@@ -231,5 +249,7 @@ if __name__ == "__main__":
     if not bool(ArgumentsCheck(args)):
         print("Argument checking fail")
 
+    config = ConfigSetup(args)
+    config.hostnames()
     
 
