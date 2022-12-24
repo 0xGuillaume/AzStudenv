@@ -19,6 +19,14 @@ class Yaml:
             data = yaml.safe_load(stream)
 
             return data
+    
+
+    @classmethod
+    def write(file:str, data:dict) -> None:
+        """Write into a yaml file."""
+
+        with open(file, "w") as file_:
+            yaml.dump(data, file_, default_flow_style=False)
 
 
 CONFIG = Yaml.read("config.yaml")["azure"]
