@@ -1,31 +1,36 @@
 # AzStudenv configuration file
 azure:
-  idrsa: "~/.ssh/id_rsa.pub"
-  poc: "POC_Linuxvms"
-  suffix: "POC"   
+  idrsa: "C:/Users//.ssh/id_rsa"
   subscription: ""
   location: "FranceCentral"
   vm:
     admin_username: "Jimbo"
     size: "Standard_B1s"
     images:
+
       debian:
         publisher: "debian"      
         offer: "debian-11"
         sku: "11"
         version: "latest" 
+
       rocky:
         publisher: "erockyenterprisesoftwarefoundationinc1653071250513"      
         offer: "rockylinux-9"
         sku: "rockylinux-9"
         version: "latest" 
+
       ubuntu:
         publisher: "Canonical"      
         offer: "UbuntuServer"
         sku: "22.04-LTS"
         version: "latest" 
+
+  # Keys updated by AzStudenv script arguments.
+  poc: "POC_Linuxvms"
+  suffix: "POC"   
   instances:
     - "AZLUX01"
-      #    - "AZLUX02"
-      #    - "AZLUX03"
+    - "AZLUX02"
+#    - "AZLUX03"
 
