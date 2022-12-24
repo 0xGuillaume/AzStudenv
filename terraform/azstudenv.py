@@ -128,6 +128,7 @@ class ConfigCompliant:
 
 class ConfigSetup:
     """
+    .
     """
 
     def __init__(self, args:object):
@@ -141,16 +142,16 @@ class ConfigSetup:
 
         images = self.args.image
         vms = int(self.args.n)
-        hostnames_ = dict()
+        hostnames_ = {}
 
         if vms == len(images):
             count = list(range(0, vms))
             indexes = [1] * vms
-    
+
         elif vms > len(images):
             count = [0] * vms
             indexes = list(range(1, vms + 1))
-    
+
         for vm in range(0, vms):
             image = images[count[vm]][:3].upper()
             index = indexes[vm]
@@ -159,8 +160,8 @@ class ConfigSetup:
             hostnames_[hostname] = images[vm]
 
         return hostnames_
-    
-    
+
+
     def poc_name(self):
         """Defines the POC name for Azure resource group."""
 
@@ -179,20 +180,20 @@ class ArgumentsCheck:
     """
 
     def __init__(self, args):
-        """""" 
+        """"""
 
         self.args = args
 
 
     def __bool__(self) -> bool:
         """"""
-        
+
         return self.poc_name() == self.images_choice()
 
 
     def poc_name(self) -> bool:
         """Check if poc name is alphanumeric only."""
-        
+
         name = self.args.poc
 
         if not name.isalpha():
@@ -201,7 +202,7 @@ class ArgumentsCheck:
         return name.isalpha()
 
 
-    def images_choice(self) -> bool:        
+    def images_choice(self) -> bool:
         """Check if number of vms match with selected ISO images."""
 
         images = self.args.image
@@ -244,12 +245,10 @@ if __name__ == "__main__":
         )
 
     print("Config Compliant :", ConfigCompliant().checks())
-    args = parser.parse_args()
-    
-    if not bool(ArgumentsCheck(args)):
+    arguments = parser.parse_args()
+
+    if not bool(ArgumentsCheck(arguments)):
         print("Argument checking fail")
 
-    config = ConfigSetup(args)
+    config = ConfigSetup(arguments)
     config.hostnames()
-    
-
