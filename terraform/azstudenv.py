@@ -126,30 +126,6 @@ class ConfigCompliant:
 # =======================================================================
 
 
-parser = argparse.ArgumentParser(
-            prog = "AzStudenv",
-            description = "What the programs does.",
-        )
-
-parser.add_argument("-n",
-            choices=[str(digit) for digit in range(1, 3 + 1)],
-            required=True,
-            help=""
-        )
-
-parser.add_argument("-i", "--image",
-            choices=["debian", "ubuntu", "rocky"],
-            required=True,
-            nargs="*",
-            help=""
-        )
-
-parser.add_argument("-p", "--poc",
-        required=True,
-        help=""
-    )
-
-args = parser.parse_args()
 """
 Mettre le check des arguments et la configuration
 de config.yaml dans une class : ConfigSetup
@@ -157,10 +133,6 @@ de config.yaml dans une class : ConfigSetup
     - vm_name(image, nb) = attribue un nom au vm 
     - poc_name(arg.poc) = defini le nom du poc
     - suffix() = prend le prefix selon le nom du poc
-
-Arguments :
-    - Rajouter un argument poc
-    - Faire un test pour voir si l'argument est compliant (seulement des lettre miniscules)
 """
 
 
@@ -185,39 +157,79 @@ class ConfigSetup:
 
 
 class ArgumentsCheck:
+    """Check if arguments are well formatted.
     """
-    """
 
-    def __init__(self):
+    def __init__(self, args):
+        """""" 
+
+        self.args = args
+
+
+    def __bool__(self) -> bool:
         """"""
+        
+        return self.poc_name() == self.images_choice()
 
 
-    def poc_name(self):
-        """"""
+    def poc_name(self) -> bool:
+        """Check if poc name is alphanumeric only."""
+        
+        name = self.args.poc
+
+        if not name.isalpha():
+            print("Seul les lettres sont acceptees")
+
+        return name.isalpha()
 
 
-    def images_choice(self):        
-        """"""
+    def images_choice(self) -> bool:        
+        """Check if number of vms match with selected ISO images."""
+
+        images = self.args.image
+        images_count = int(self.args.n)
+
+        if len(images) == 2 and images_count == 3:
+            print("Si vous souhaitez creer 3 vms, il vous faut preciser un os pour les 3 ou un os par vm")
+            return False
+
+        if len(images) > images_count:
+            print("Il y a plus d'image en argument que de nombre de vm a creer")
+            return False
+
+        return True
 
 
-def images_choice_is_valid() -> bool:
-    """"""
+if __name__ == "__main__":
 
-    images = args.image
-    images_count = int(args.n)
+    parser = argparse.ArgumentParser(
+                prog = "AzStudenv",
+                description = "What the programs does.",
+            )
 
-    if len(images) == 2 and images_count == 3:
-        print("Si vous souhaitez creer 3 vms, il vous faut preciser un os pour les 3 ou un os par vm")
-        return False
+    parser.add_argument("-n",
+                choices=[str(digit) for digit in range(1, 3 + 1)],
+                required=True,
+                help=""
+            )
 
-    if len(images) > images_count:
-        print("Il y a plus d'image en argument que de nombre de vm a creer")
-        return False
+    parser.add_argument("-i", "--image",
+                choices=["debian", "ubuntu", "rocky"],
+                required=True,
+                nargs="*",
+                help=""
+            )
 
+    parser.add_argument("-p", "--poc",
+            required=True,
+            help=""
+        )
 
+    print("Config Compliant :", ConfigCompliant().checks())
+    args = parser.parse_args()
+    
+    if not bool(ArgumentsCheck(args)):
+        print("Argument checking fail")
 
+    
 
-
-images_choice_is_valid()
-
-#print(ConfigCompliant().checks())
