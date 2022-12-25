@@ -29,8 +29,6 @@ class Yaml:
             yaml.dump(data, file_, default_flow_style=False)
 
 
-CONFIG = Yaml.read("config.yaml")
-
 
 class ConfigCompliant:
     """Checks if configuration is compliant.
@@ -51,6 +49,16 @@ class ConfigCompliant:
 
     def __init__(self):
         """Init Controls class."""
+
+
+    def __bool__(self) -> bool:
+        """Checks all three tests"""
+
+        subscription = self.subscription_is_valid(CONFIG["azure"]["subscription"])
+        rsa = self.id_rsa_is_valid(CONFIG["azure"]["idrsa"])
+        admin_username = self.admin_username_is_valid()
+
+        return subscription == rsa == admin_username
 
 
     def key_empty(self, key:str) -> bool:
@@ -121,18 +129,6 @@ class ConfigCompliant:
         return True
 
 
-    def checks(self) -> bool:
-        """Checks all three tests"""
-
-        subscription = self.subscription_is_valid(CONFIG["azure"]["subscription"])
-        rsa = self.id_rsa_is_valid(CONFIG["azure"]["idrsa"])
-        admin_username = self.admin_username_is_valid()
-
-        return subscription == rsa == admin_username
-
-
-# =======================================================================
-
 
 class ConfigSetup:
     """
@@ -144,6 +140,7 @@ class ConfigSetup:
 
         self.args = args
         self.conf = CONFIG
+        self.clear()
 
     def clear(self) -> None:
         """Clear specific YAML config keys before dumping new data in."""
@@ -176,8 +173,7 @@ class ConfigSetup:
             image = images[count[vm]][:3].upper()
             index = indexes[vm]
             hostname = f"AZUX{image}0{index}"
-
-            #hostnames_[hostname] = images[vm]
+            hostnames_[hostname] = images[count[vm]]
 
         return hostnames_
 
@@ -193,6 +189,15 @@ class ConfigSetup:
         """Define suffix for Azure resources based on first 3 chars of the POC name."""
 
         return self.args.poc[:3].upper()
+
+    def fill(self):
+        """File YAML config file with new arguments parameters."""
+
+        self.conf["azure"]["poc"] = self.poc_name()
+        self.conf["azure"]["suffix"] = self.suffix()
+        self.conf["azure"]["instances"] = self.hostnames()
+
+        Yaml.write("config.yaml", self.conf)
 
 
 class ArgumentsCheck:
@@ -239,7 +244,8 @@ class ArgumentsCheck:
         return True
 
 
-if __name__ == "__main__":
+def args_parser() -> object:
+    """Set available arguments."""
 
     parser = argparse.ArgumentParser(
                 prog = "AzStudenv",
@@ -264,12 +270,27 @@ if __name__ == "__main__":
             help=""
         )
 
-    print("Config Compliant :", ConfigCompliant().checks())
-    arguments = parser.parse_args()
+    return parser.parse_args()
+
+
+def main() -> None:
+    """Main function."""
+
+    arguments = args_parser()
+
+    if not bool(ConfigCompliant()):
+        return
 
     if not bool(ArgumentsCheck(arguments)):
-        print("Argument checking fail")
+        return
 
     config = ConfigSetup(arguments)
-    config.clear()
-    config.hostnames()
+    config.fill()
+
+
+if __name__ == "__main__":
+    CONFIG = Yaml.read("config.yaml")
+    main()
+
+
+
