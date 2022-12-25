@@ -30,18 +30,18 @@ resource "azurerm_resource_group" "main" {
 
 
 # SSH Key
-resource "azurerm_ssh_public_key" "example" {
-	for_each			= toset(local.config.instances)
-	name                = "${each.key}_SSHKey"
-	resource_group_name   = azurerm_resource_group.main.name
-	location              = azurerm_resource_group.main.location
-	public_key          = file(local.config["idrsa"])
+resource "azurerm_ssh_public_key" "main" {
+	for_each				= tomap(local.config.instances)
+	name                	= "${each.key}_SSHKey"
+	resource_group_name   	= azurerm_resource_group.main.name
+	location              	= azurerm_resource_group.main.location
+	public_key  			= file(local.config["idrsa"])		
 }
 
 
 # Virtual Machines
 resource "azurerm_linux_virtual_machine" "main" {
-	for_each 			  = toset(local.config.instances)
+	for_each 			  = tomap(local.config.instances)
 	name                  = each.key
 	resource_group_name   = azurerm_resource_group.main.name
 	location              = azurerm_resource_group.main.location
@@ -55,10 +55,10 @@ resource "azurerm_linux_virtual_machine" "main" {
 	disable_password_authentication = true
 
 	source_image_reference {
-		publisher = local.image["debian"]["publisher"] 
-		offer     = local.image["debian"]["offer"]
-		sku       = local.image["debian"]["sku"]
-		version   = local.image["debian"]["version"]
+		publisher = local.image[each.value]["publisher"] 
+		offer     = local.image[each.value]["offer"]
+		sku       = local.image[each.value]["sku"]
+		version   = local.image[each.value]["version"]
 	}
 
 	admin_ssh_key {

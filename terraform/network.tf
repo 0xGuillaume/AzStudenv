@@ -20,7 +20,7 @@ resource "azurerm_subnet" "main" {
 
 # Public IP Addresses
 resource "azurerm_public_ip" "main" {
-	for_each 			= toset(local.config.instances)
+	for_each 			= tomap(local.config.instances)
 	name                = "${each.key}_PublicIP"
 	location            = azurerm_resource_group.main.location
 	resource_group_name = azurerm_resource_group.main.name
@@ -50,7 +50,7 @@ resource "azurerm_network_security_group" "main" {
 
 # Network Interface Cards
 resource "azurerm_network_interface" "main" {
-	for_each 			= toset(local.config.instances)
+	for_each 			= tomap(local.config.instances)
 	name                = "${each.key}_NIC"
 	location            = azurerm_resource_group.main.location
 	resource_group_name = azurerm_resource_group.main.name
@@ -66,7 +66,7 @@ resource "azurerm_network_interface" "main" {
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "main" {
-	for_each 					= toset(local.config.instances)
+	for_each 					= tomap(local.config.instances)
 	network_interface_id      	= azurerm_network_interface.main["${each.key}"].id
 	network_security_group_id 	= azurerm_network_security_group.main.id
 }
