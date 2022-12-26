@@ -3,6 +3,7 @@ import argparse
 import string
 from pathlib import Path
 from colorama import Fore
+import subprocess
 import yaml
 
 
@@ -315,6 +316,29 @@ def args_parser() -> object:
     return parser.parse_args()
 
 
+
+
+
+class Terraform:
+    """
+    .
+    """
+
+    def __init__(self) -> None:
+        """Inits Terraform class."""
+
+    
+    def output_format(self) -> str:
+        """Format terraform console output."""
+
+
+    def apply(self) -> None:
+        """Apply terraform files."""
+
+
+
+
+
 def main(config:str) -> None:
     """Main function."""
 
@@ -330,6 +354,27 @@ def main(config:str) -> None:
     config.fill()
 
     Console.info("Waiting for Terraform script to execute...")
+
+    # =============================================================
+
+    apply = subprocess.Popen(
+            ["terraform", "apply", "-auto-approve", "-no-color"], 
+            shell=False, stdout=subprocess.PIPE, encoding=None
+    )
+    
+    while True:
+        line = apply.stdout.readline().decode("utf-8")
+        if "Creation complete after" in line:
+            print(line.split())
+
+        elif "Error:" in line:
+            print("error")
+            break
+
+        if not line:
+            break
+
+
 
 
 if __name__ == "__main__":
