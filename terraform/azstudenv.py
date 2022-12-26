@@ -80,6 +80,9 @@ class ConfigCompliant:
 
         self.config_filename = "config.yaml"
 
+        if self.__bool__:
+            Console.info(self.config_filename, "Yaml configuration is compliant.")
+
 
     def __bool__(self) -> bool:
         """Checks all three tests"""
@@ -111,7 +114,7 @@ class ConfigCompliant:
         """Check if subscription ID has been filled."""
 
         if self.key_empty(key):
-            Console.error(self.config_filename, f"Config key 'subscription' is empty.")
+            Console.error(self.config_filename, "Config key 'subscription' is empty.")
             return False
         return True
 
@@ -120,7 +123,7 @@ class ConfigCompliant:
         """Checks about ssh id_rsa key"""
 
         if self.key_empty(key):
-            Console.error(self.config_filename, f"Config key 'idrsa' is empty.")
+            Console.error(self.config_filename, "Config key 'idrsa' is empty.")
             return False
 
         if not self.file_exists(key):
@@ -153,7 +156,7 @@ class ConfigCompliant:
 
         if username in banned_username:
             message = f"Current admin username : '{username}' is a banned value by Azure."
-            Console.error(self.config_filename, message) 
+            Console.error(self.config_filename, message)
             return False
 
         for count, char in enumerate(username):
@@ -186,8 +189,7 @@ class ConfigSetup:
         conf["azure"]["instances"] = []
         self.conf = conf
 
-        Yaml.write("config.yaml", self.conf)
-
+        Yaml.write(CONFIG_FILE, self.conf)
 
     def hostnames(self) -> dict:
         """Set hostname and ISO image for Az virtual machines."""
@@ -232,7 +234,7 @@ class ConfigSetup:
         self.conf["azure"]["suffix"] = self.suffix()
         self.conf["azure"]["instances"] = self.hostnames()
 
-        Yaml.write("config.yaml", self.conf)
+        Yaml.write(CONFIG_FILE, self.conf)
 
 
 class ArgumentsCheck:
@@ -324,5 +326,11 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    CONFIG = Yaml.read("config.yaml")
-    main()
+
+    try:
+        CONFIG_FILE = "config.yaml"
+        CONFIG = Yaml.read(CONFIG_FILE)
+        main()
+
+    except FileNotFoundError as error:
+        Console.error("config.yaml", error)
