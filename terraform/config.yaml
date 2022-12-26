@@ -1,13 +1,15 @@
 azure:
   idrsa: 
   instances:
-    AZUXROC01: rocky
+    AZUXDEB01: debian
+    AZUXRHE01: rhel
+    AZUXUBU01: ubuntu
   location: FranceCentral
   poc: POC_Ansible
   subscription: 
   suffix: ANS
   vm:
-    admin_username: Jimbo
+    admin_username: jimbo!
     images:
       debian:
         offer: debian-11
@@ -15,7 +17,7 @@ azure:
         sku: '11'
         version: latest
       rhel:
-        offer: rockylinux
+        offer: RHEL
         publisher: RedHat
         sku: 86-gen2
         version: latest
