@@ -2,7 +2,35 @@
 import argparse
 import string
 from pathlib import Path
+from colorama import Fore
 import yaml
+
+
+class Console:
+    """
+    .
+    """
+
+    def __init__(self):
+        """Inits Console class."""
+
+
+    @classmethod
+    def info(cls, file:str, message:str) -> None:
+        """Display an informative message."""
+
+        output = f"[INFO] - {file} - {message}"
+
+        return print(Fore.GREEN + output + Fore.RESET)
+
+
+    @classmethod
+    def error(cls, file:str, message:str) -> None:
+        """Display an error message."""
+
+        output = f"[ERROR] - {file} - {message}"
+
+        return print(Fore.RED + output + Fore.RESET)
 
 
 class Yaml:
@@ -19,13 +47,13 @@ class Yaml:
             data = yaml.safe_load(stream)
 
             return data
-    
+
 
     @classmethod
     def write(cls, file:str, data:dict) -> None:
         """Write into a yaml file."""
 
-        with open(file, "w") as file_:
+        with open(file, "w", encoding="UTF-8") as file_:
             yaml.dump(data, file_, default_flow_style=False)
 
 
@@ -50,6 +78,8 @@ class ConfigCompliant:
     def __init__(self):
         """Init Controls class."""
 
+        self.config_filename = "config.yaml"
+
 
     def __bool__(self) -> bool:
         """Checks all three tests"""
@@ -73,7 +103,6 @@ class ConfigCompliant:
         """Check if a given path and file exists."""
 
         if not Path(file).is_file():
-            print(f"[ERROR] File '{file} does not exist.'")
             return False
         return True
 
@@ -82,6 +111,7 @@ class ConfigCompliant:
         """Check if subscription ID has been filled."""
 
         if self.key_empty(key):
+            Console.error(self.config_filename, f"Config key 'subscription' is empty.")
             return False
         return True
 
@@ -90,9 +120,11 @@ class ConfigCompliant:
         """Checks about ssh id_rsa key"""
 
         if self.key_empty(key):
+            Console.error(self.config_filename, f"Config key 'idrsa' is empty.")
             return False
 
         if not self.file_exists(key):
+            Console.error(self.config_filename, f"File does not exist '{key}'")
             return False
         return True
 
@@ -115,16 +147,19 @@ class ConfigCompliant:
         ]
 
         if len(username) < 1 or len(username) > 64:
-            print(f"[ERROR] Admin username value must be between 1 and 64 characters long [Length: {len(username)}].")
+            message = f"Admin username value must be between 1 and 64 characters long [Length: {len(username)}]."
+            Console.error(self.config_filename, message)
             return False
 
         if username in banned_username:
-            print(f"[ERROR] Current admin username : '{username}' is a banned value by Azure.")
+            message = f"Current admin username : '{username}' is a banned value by Azure."
+            Console.error(self.config_filename, message) 
             return False
 
         for count, char in enumerate(username):
             if char not in authorized_chars:
-                print(f"[ERROR] '{char}' in '{username}' [Position: {count + 1}] is not an authorized character for admin_username.")
+                message = f"'{char}' in '{username}' [Position: {count + 1}] is not an authorized character for admin_username."
+                Console.error(self.config_filename, message)
                 return False
         return True
 
@@ -259,7 +294,7 @@ def args_parser() -> object:
             )
 
     parser.add_argument("-i", "--image",
-                choices=["debian", "ubuntu", "rocky"],
+                choices=["debian", "ubuntu", "rhel"],
                 required=True,
                 nargs="*",
                 help=""
@@ -291,6 +326,3 @@ def main() -> None:
 if __name__ == "__main__":
     CONFIG = Yaml.read("config.yaml")
     main()
-
-
-
