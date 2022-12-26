@@ -16,10 +16,10 @@ class Console:
 
 
     @classmethod
-    def info(cls, file:str, message:str) -> None:
+    def info(cls, message:str) -> None:
         """Display an informative message."""
 
-        output = f"[INFO] - {file} - {message}"
+        output = f"[INFO] - {message}"
 
         return print(Fore.GREEN + output + Fore.RESET)
 
@@ -81,7 +81,7 @@ class ConfigCompliant:
         self.config_filename = "config.yaml"
 
         if self.__bool__:
-            Console.info(self.config_filename, "Yaml configuration is compliant.")
+            Console.info("Yaml configuration is compliant.")
 
 
     def __bool__(self) -> bool:
@@ -190,6 +190,7 @@ class ConfigSetup:
         self.conf = conf
 
         Yaml.write(CONFIG_FILE, self.conf)
+        Console.info("Clearing previous AzStudenv configuration...")
 
     def hostnames(self) -> dict:
         """Set hostname and ISO image for Az virtual machines."""
@@ -235,6 +236,10 @@ class ConfigSetup:
         self.conf["azure"]["instances"] = self.hostnames()
 
         Yaml.write(CONFIG_FILE, self.conf)
+
+        vms = len(self.hostnames())
+        message = f"Configuration applied for {self.poc_name()} with {vms} virtual machine(s)."
+        Console.info(message)
 
 
 class ArgumentsCheck:
@@ -310,7 +315,7 @@ def args_parser() -> object:
     return parser.parse_args()
 
 
-def main() -> None:
+def main(config:str) -> None:
     """Main function."""
 
     arguments = args_parser()
@@ -324,13 +329,15 @@ def main() -> None:
     config = ConfigSetup(arguments)
     config.fill()
 
+    Console.info("Waiting for Terraform script to execute...")
+
 
 if __name__ == "__main__":
 
     try:
         CONFIG_FILE = "config.yaml"
         CONFIG = Yaml.read(CONFIG_FILE)
-        main()
+        main(CONFIG_FILE)
 
     except FileNotFoundError as error:
         Console.error("config.yaml", error)
