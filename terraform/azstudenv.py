@@ -20,7 +20,7 @@ class Console:
     def info(cls, message:str) -> None:
         """Display an informative message."""
 
-        output = f"[INFO] - {message}"
+        output = f"[INFO] [AZSTUDENV] {message}"
 
         return print(Fore.GREEN + output + Fore.RESET)
 
@@ -32,6 +32,15 @@ class Console:
         output = f"[ERROR] - {file} - {message}"
 
         return print(Fore.RED + output + Fore.RESET)
+
+
+    @classmethod
+    def terraform(cls, resource:str, time:str) -> None:
+        """Display terraform message."""
+
+        output = f"[INFO] [TERRAFORM] {resource} has been created - Creation time : {time}"
+     
+        return print(Fore.YELLOW + output + Fore.RESET)
 
 
 class Yaml:
@@ -328,14 +337,19 @@ class Terraform:
         """Inits Terraform class."""
 
     
-    def output_format(self) -> str:
+    @classmethod
+    def output_format(self, output:str) -> str:
         """Format terraform console output."""
+        
+        output = output.split()
+        resource = output[0].capitalize()
+        time = output[4]
+
+        Console.terraform(resource, time)
 
 
     def apply(self) -> None:
         """Apply terraform files."""
-
-
 
 
 
@@ -365,7 +379,7 @@ def main(config:str) -> None:
     while True:
         line = apply.stdout.readline().decode("utf-8")
         if "Creation complete after" in line:
-            print(line.split())
+            Terraform.output_format(line)
 
         elif "Error:" in line:
             print("error")
