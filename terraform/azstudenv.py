@@ -35,10 +35,10 @@ class Console:
 
 
     @classmethod
-    def terraform(cls, resource:str, time:str) -> None:
+    def terraform(cls, resource:str) -> None:
         """Display terraform message."""
 
-        output = f"[INFO] [TERRAFORM] {resource} has been created - Creation time : {time}"
+        output = f"[INFO] [TERRAFORM] {resource} has been created."
      
         return print(Fore.YELLOW + output + Fore.RESET)
 
@@ -343,9 +343,8 @@ class Terraform:
         
         output = output.split()
         resource = output[0].capitalize()
-        time = output[4]
 
-        Console.terraform(resource, time)
+        Console.terraform(resource)
 
 
     def apply(self) -> None:
@@ -388,7 +387,7 @@ def main(config:str) -> None:
         if not line:
             break
 
-
+    Console.info("All Azure resources have been created. Check your Azure Portal (https://portal.azure.com/) for more details.")
 
 
 if __name__ == "__main__":
