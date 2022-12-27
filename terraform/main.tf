@@ -61,16 +61,6 @@ resource "azurerm_linux_virtual_machine" "main" {
     version   = local.image[each.value]["version"]
   }
 
-  dynamic plan {
-    for_each = each.value == "rocky" ? [1] : []
-
-    content {
-      name      = "rockylinux-9"
-      publisher = "erockyenterprisesoftwarefoundationinc1653071250513"
-      product   = "rockylinux-9"
-    }
-  }
-
   admin_ssh_key {
     username   = local.config["vm"]["admin_username"]
     public_key = file(local.config["idrsa"])
@@ -81,4 +71,3 @@ resource "azurerm_linux_virtual_machine" "main" {
     storage_account_type = "Standard_LRS"
   }
 }
-
