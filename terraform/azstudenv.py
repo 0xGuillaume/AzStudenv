@@ -5,6 +5,7 @@ from pathlib import Path
 from colorama import Fore
 import subprocess
 import yaml
+import json
 
 
 class Console:
@@ -65,6 +66,24 @@ class Yaml:
 
         with open(file, "w", encoding="UTF-8") as file_:
             yaml.dump(data, file_, default_flow_style=False)
+
+
+
+class Json:
+    """Custom methods to interract with json files."""
+
+    def __init__(self):
+        """Inits Json class."""
+
+    @classmethod
+    def read(cls, file:str) -> dict:
+        """Read json file."""
+
+        with open(file, "r", encoding="UTF-8") as file_:
+            data = json.load(file_)
+
+        return data
+
 
 
 
@@ -326,8 +345,6 @@ def args_parser() -> object:
 
 
 
-
-
 class Terraform:
     """
     .
@@ -370,6 +387,27 @@ class Terraform:
         return tf_dir and tf_lock
 
 
+    @classmethod
+    def output(self) -> None:
+        """Parse *.tfstate json file to get ressources values."""
+
+        resources = Json.read("terraform.tfstate")["resources"]
+        message = "Follow the SSH command(s) below to connect to your virtual machine(s) :\n\n"
+
+        for resource in resources:
+            if resource["type"] == "azurerm_linux_virtual_machine":
+                for instance in resource["instances"]:
+
+                    instance = instance["attributes"]
+                    hostname = instance["computer_name"]
+                    user     = instance["admin_username"]
+                    ip       = instance["public_ip_address"]
+
+                    message += Fore.CYAN + f"\t- {hostname} : ssh {user}@{ip}\n\n" + Fore.RESET
+
+        Console.info(message)
+
+
 
 def main(config:str) -> None:
     """Main function."""
@@ -405,7 +443,6 @@ def main(config:str) -> None:
     
     while True:
         line = apply.stdout.readline().decode("utf-8")
-        print("!!!!!!!!!!!!!!", line)
         if "Creation complete after" in line:
             Terraform.output_format(line)
 
@@ -416,7 +453,9 @@ def main(config:str) -> None:
         if not line:
             break
 
+    Terraform.output()
     Console.info("All Azure resources have been created. Check your Azure Portal (https://portal.azure.com/) for more details.")
+
 
 
 if __name__ == "__main__":
