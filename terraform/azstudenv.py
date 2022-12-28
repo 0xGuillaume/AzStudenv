@@ -101,7 +101,7 @@ class ConfigCompliant:
         rsa = self.id_rsa_is_valid(CONFIG["azure"]["idrsa"])
         admin_username = self.admin_username_is_valid()
 
-        return subscription == rsa == admin_username
+        return subscription and rsa and admin_username
 
 
     def key_empty(self, key:str) -> bool:
@@ -265,7 +265,7 @@ class ArgumentsCheck:
     def __bool__(self) -> bool:
         """"""
 
-        return self.poc_name() == self.images_choice()
+        return self.poc_name() and self.images_choice()
 
 
     def poc_name(self) -> bool:
