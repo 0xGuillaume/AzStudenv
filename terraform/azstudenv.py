@@ -2,10 +2,10 @@
 import argparse
 import string
 from pathlib import Path
-from colorama import Fore
-import subprocess
-import yaml
 import json
+import subprocess
+from colorama import Fore
+import yaml
 
 
 class Console:
@@ -48,7 +48,7 @@ class Console:
         """Display terraform message."""
 
         output = f"[INFO] [TERRAFORM] {resource} has been created."
-     
+
         return print(Fore.YELLOW + output + Fore.RESET)
 
 
@@ -244,11 +244,11 @@ class ConfigSetup:
             count = [0] * vms
             indexes = list(range(1, vms + 1))
 
-        for vm in range(0, vms):
-            image = images[count[vm]][:3].upper()
-            index = indexes[vm]
+        for vm_ in range(0, vms):
+            image = images[count[vm_]][:3].upper()
+            index = indexes[vm_]
             hostname = f"AZUX{image}0{index}"
-            hostnames_[hostname] = images[count[vm]]
+            hostnames_[hostname] = images[count[vm_]]
 
         return hostnames_
 
@@ -361,11 +361,11 @@ class Terraform:
     def __init__(self) -> None:
         """Inits Terraform class."""
 
-    
+
     @classmethod
-    def output_format(self, output:str) -> str:
+    def output_format(cls, output:str) -> str:
         """Format terraform console output."""
-        
+
         output = output.split()
         resource = output[0].capitalize()
 
@@ -378,7 +378,7 @@ class Terraform:
 
 
     @classmethod
-    def is_init(self) -> bool:
+    def is_init(cls) -> bool:
         """Check wether or not Terraform has been init."""
 
         tf_dir = Path(".terraform/").is_dir()
@@ -396,7 +396,7 @@ class Terraform:
 
 
     @classmethod
-    def output(self) -> None:
+    def output(cls) -> None:
         """Parse *.tfstate json file to get ressources values."""
 
         try:
@@ -404,7 +404,7 @@ class Terraform:
 
         except FileNotFoundError:
             Console.warning("File `terraform.tfstate` not found. Enable to display SSH commands to connect to virtual machines.")
-            return 
+            return
 
         message = "Follow the SSH command(s) below to connect to your virtual machine(s) :\n\n"
 
@@ -412,12 +412,12 @@ class Terraform:
             if resource["type"] == "azurerm_linux_virtual_machine":
                 for instance in resource["instances"]:
 
-                    instance = instance["attributes"]
-                    hostname = instance["computer_name"]
-                    user     = instance["admin_username"]
-                    ip       = instance["public_ip_address"]
+                    instance    = instance["attributes"]
+                    hostname    = instance["computer_name"]
+                    user        = instance["admin_username"]
+                    ip_address  = instance["public_ip_address"]
 
-                    message += Fore.CYAN + f"\t- {hostname} : ssh {user}@{ip}\n\n" + Fore.RESET
+                    message += Fore.CYAN + f"\t- {hostname} : ssh {user}@{ip_address}\n\n" + Fore.RESET
 
         Console.info(message)
 
@@ -432,8 +432,7 @@ def main(config:str) -> None:
     if not config_compliant:
         return
 
-    elif config_compliant:
-        Console.info("Yaml configuration is compliant.")
+    Console.info("Yaml configuration is compliant.")
 
 
     if not bool(ArgumentsCheck(arguments)):
@@ -451,10 +450,10 @@ def main(config:str) -> None:
     # =============================================================
 
     apply = subprocess.Popen(
-            ["terraform", "apply", "-auto-approve", "-no-color"], 
+            ["terraform", "apply", "-auto-approve", "-no-color"],
             shell=False, stdout=subprocess.PIPE, encoding=None
     )
-    
+
     while True:
         line = apply.stdout.readline().decode("utf-8")
         if "Creation complete after" in line:
