@@ -90,8 +90,8 @@ class ConfigCompliant:
 
         self.config_filename = "config.yaml"
 
-        if self.__bool__:
-            Console.info("Yaml configuration is compliant.")
+        #if bool(self.__bool__):
+        #    Console.info("Yaml configuration is compliant.")
 
 
     def __bool__(self) -> bool:
@@ -352,13 +352,37 @@ class Terraform:
 
 
 
+    @classmethod
+    def is_init(self) -> bool:
+        """Check wether or not Terraform has been init."""
+
+        tf_dir = Path(".terraform/").is_dir()
+        tf_lock = Path(".terraform.lock.hcl").is_file()
+
+        if not tf_dir:
+            message = "Directory not found. You probably did not run `terraform init` to initiaize the Terraform working directory"
+            Console.error("./terraform", message)
+
+        if not tf_lock:
+            message = "File not found. You probably did not run `terraform init` to initiaize the Terraform working directory"
+            Console.error(".terraform.lock.hcl", message)
+
+        return tf_dir and tf_lock
+
+
+
 def main(config:str) -> None:
     """Main function."""
 
     arguments = args_parser()
+    config_compliant = bool(ConfigCompliant())
 
-    if not bool(ConfigCompliant()):
+    if not config_compliant:
         return
+
+    elif config_compliant:
+        Console.info("Yaml configuration is compliant.")
+
 
     if not bool(ArgumentsCheck(arguments)):
         return
@@ -367,6 +391,10 @@ def main(config:str) -> None:
     config.fill()
 
     Console.info("Waiting for Terraform script to execute...")
+
+    if not Terraform.is_init():
+        return
+
 
     # =============================================================
 
@@ -377,6 +405,7 @@ def main(config:str) -> None:
     
     while True:
         line = apply.stdout.readline().decode("utf-8")
+        print("!!!!!!!!!!!!!!", line)
         if "Creation complete after" in line:
             Terraform.output_format(line)
 
