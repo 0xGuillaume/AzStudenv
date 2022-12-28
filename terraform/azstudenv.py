@@ -34,6 +34,14 @@ class Console:
 
         return print(Fore.RED + output + Fore.RESET)
 
+    @classmethod
+    def warning(cls, message:str) -> None:
+        """Display a warning message."""
+
+        output = f"[WARN] [TERRAFORM] {message}"
+
+        return print(Fore.YELLOW + output + Fore.RESET)
+
 
     @classmethod
     def terraform(cls, resource:str) -> None:
@@ -391,7 +399,13 @@ class Terraform:
     def output(self) -> None:
         """Parse *.tfstate json file to get ressources values."""
 
-        resources = Json.read("terraform.tfstate")["resources"]
+        try:
+            resources = Json.read("terraform.tfstate")["resources"]
+
+        except FileNotFoundError:
+            Console.warning("File `terraform.tfstate` not found. Enable to display SSH commands to connect to virtual machines.")
+            return 
+
         message = "Follow the SSH command(s) below to connect to your virtual machine(s) :\n\n"
 
         for resource in resources:
