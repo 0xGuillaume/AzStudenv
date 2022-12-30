@@ -372,8 +372,32 @@ class Terraform:
         Console.terraform(resource)
 
 
-    def apply(self) -> None:
+    @classmethod
+    def apply(self) -> bool:
         """Apply terraform files."""
+
+        apply = subprocess.Popen(
+                ["terraform", "apply", "-auto-approve", "-no-color"],
+                shell=False, stdout=subprocess.PIPE, encoding=None
+        )
+
+        count = 0
+        while True:
+            line = apply.stdout.readline().decode("utf-8")
+
+            if not line and not count:
+                Console.error("*.tf", "Terraform error while executing. Refer to the error message above.")
+                return False
+
+            if not line and count:
+                break
+
+            if "Creation complete after" in line:
+                Terraform.output_format(line)
+            
+            count += 1
+
+        return True
 
 
 
@@ -446,29 +470,10 @@ def main(config:str) -> None:
     if not Terraform.is_init():
         return
 
-
-    # =============================================================
-
-    apply = subprocess.Popen(
-            ["terraform", "apply", "-auto-approve", "-no-color"],
-            shell=False, stdout=subprocess.PIPE, encoding=None
-    )
-
-    while True:
-        line = apply.stdout.readline().decode("utf-8")
-        if "Creation complete after" in line:
-            Terraform.output_format(line)
-
-        elif "Error:" in line:
-            print("error")
-            break
-
-        if not line:
-            break
-
-    Terraform.output()
-    Console.info("All Azure resources have been created. Check your Azure Portal (https://portal.azure.com/) for more details.")
-
+    if Terraform.apply():
+        Terraform.output()
+        message = "All Azure resources have been created. Check your Azure Portal (https://portal.azure.com/) for more details."
+        Console.info(message)
 
 
 if __name__ == "__main__":
