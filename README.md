@@ -23,7 +23,7 @@ There are 3 images available at the moment :
 
 
 
-## Prerequisite
+## Prerequisites
 
 - An Azure (Student or not) Subscription - [Subscribed](https://azure.microsoft.com/en-us/free/). 
 
@@ -43,6 +43,40 @@ There are 3 images available at the moment :
     ```shell
     $ sudo dnf install -y azure-cli
     ```
+
+
+## Authenticate with Azure CLI
+
+Once all prerequisites are satisfied you must authenticate to your **Azure Subscription** in order to let Terraform create infrastructure.
+
+```shell
+$ az login
+```
+
+Once successfully authenticated, your terminal will display your Azure subscription informations.
+
+```shell
+You have logged in. Now let us find all the subscriptions to which you have access...
+
+[
+  {
+    "cloudName": "AzureCloud",
+    "homeTenantId": "Foo-Tenant-Id",
+    "id": "Foo-Subscription-Id",
+    "isDefault": true,
+    "managedByTenants": [],
+    "name": "Foo-Subscription-Name",
+    "state": "Enabled",
+    "tenantId": "Foo-TenantId",
+    "user": {
+      "name": "username@domain.com",
+      "type": "user"
+    }
+  }
+]
+```
+
+You **will need** the `id` key to setup **AzStudenv** configuration.
 
 
 ## Install
