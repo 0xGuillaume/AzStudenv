@@ -39,7 +39,7 @@ There are 3 images available at the moment :
     $ sudo dnf install -y python3 python3-venv
     ```
 
-- Azure CLI
+- Azure CLI - (Downloads)[https://learn.microsoft.com/en-us/cli/azure/install-azure-cli]
     ```shell
     $ sudo dnf install -y azure-cli
     ```
