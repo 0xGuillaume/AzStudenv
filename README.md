@@ -25,7 +25,7 @@ There are 3 images available at the moment :
 
 ## Prerequisite
 
-- An Azure (Student or not) Subscription. 
+- An Azure (Student or not) Subscription - [Subscribed](https://azure.microsoft.com/en-us/free/). 
 
 - Terraform 1.3.7 or later - [Downloads](https://developer.hashicorp.com/terraform/downloads).
     ```shell
