@@ -22,6 +22,7 @@ There are 3 images available at the moment :
 - Red Hat Linux Entreprise 8
 
 
+
 ## Prerequisite
 
 - An Azure (Student or not) Subscription. 
@@ -39,10 +40,9 @@ There are 3 images available at the moment :
     ```
 
 - Azure CLI
-
-### Terraform
-
-
+    ```shell
+    $ sudo dnf install -y azure-cli
+    ```
 
 
 ## Install
