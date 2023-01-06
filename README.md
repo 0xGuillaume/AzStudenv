@@ -21,3 +21,30 @@ There are 3 images available at the moment :
 
 - Red Hat Linux Entreprise 8
 
+
+## Prerequisite
+
+- An Azure (Student or not) Subscription. 
+
+- Terraform 1.3.7 or later.
+```shell
+$ sudo dnf install -y dnf-plugins-core
+$ sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/$release/hashicorp.repo
+$ sudo dnf install -y terraform
+```
+
+- Python 3 & Python 3 virtual environment.
+```shell
+$ sudo dnf install -y python3 python3-venv
+```
+
+- Azure CLI
+
+### Terraform
+
+
+
+
+## Install
+
+
