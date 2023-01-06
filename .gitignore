@@ -1,5 +1,10 @@
 *test*
-env/
 
+env/
+__pycache__
+
+
+.terraform/
+*.hcl
 *.tfstate
 *.tfstate.backup
