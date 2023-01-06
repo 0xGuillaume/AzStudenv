@@ -1,0 +1,28 @@
+azure:
+  idrsa: 
+  instances:
+    AZUXDEB01: debian
+    AZUXRHE01: rhel
+  location: FranceCentral
+  poc: POC_Test
+  subscription: 
+  suffix: TES
+  vm:
+    admin_username: jimbo
+    images:
+      debian:
+        offer: debian-11
+        publisher: debian
+        sku: '11'
+        version: latest
+      rhel:
+        offer: RHEL
+        publisher: RedHat
+        sku: 86-gen2
+        version: latest
+      ubuntu:
+        offer: 0001-com-ubuntu-server-focal
+        publisher: canonical
+        sku: 20_04-lts-gen2
+        version: latest
+    size: Standard_B1s
