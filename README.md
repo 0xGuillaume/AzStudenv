@@ -114,9 +114,22 @@ azure:
 
 ## Usage
 
+
+
+
 ## Linting
 
-Pylint.
+Code has been written under the [PEP-8](https://peps.python.org/pep-0008/) and [Google](https://google.github.io/styleguide/pyguide.html) style guides.
+
+[Pylint](https://github.com/PyCQA/pylint) has also been used as static code analyser to help reformat Python code.
+
+```
+$ (env) pylint main.py
+
+--------------------------------------------------------------------
+Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
+```
+
 
 ## Python dependencies
 
