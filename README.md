@@ -32,7 +32,9 @@ There are 3 images available at the moment :
 - Terraform 1.3.7 or later - [Downloads](https://developer.hashicorp.com/terraform/downloads).
     ```shell
     $ sudo dnf install -y dnf-plugins-core
+
     $ sudo dnf config-manager --add-repo https://rpm.releases.hashicorp.com/$release/hashicorp.repo
+
     $ sudo dnf install -y terraform
     ```
 
