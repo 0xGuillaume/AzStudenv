@@ -114,6 +114,9 @@ azure:
 
 ## Usage
 
+## Linting
+
+Pylint.
 
 ## Python dependencies
 
