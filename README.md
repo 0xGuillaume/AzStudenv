@@ -7,11 +7,13 @@
 
 # AzStudenv
 
-Azure Linux environement for Student. Designed for Azure Student Subscription but can be used with any Azure subscriptions.
+**AzStudenv** (Azure Student Environement) is primarly designed for Azure Student subscription but can be used with any other Azure subscriptions.
+
+**Attention**, you will be charged creating and using Azure services.
 
 ---
 
-Azure Student subscription authorized the usage of 3 public IP addresses at the same time. This way AzStudenv allows you to create up to 3 virtual machines. 
+Azure Student subscription authorized the usage of 3 public IP addresses per region at the same time. This way **AzStudenv** allows you to create up to 3 linux virtual machines. 
 
 There are 3 images available at the moment :
 
@@ -92,6 +94,8 @@ Create python virtual environment and install required libraries.
 ```shell
 $ python3 -m venv env
 
+$ source env/bin/activate
+
 $ python3 -m pip install -r requirements.txt
 ```
 
@@ -100,7 +104,7 @@ Update `azstudenv/config.yaml` file with mandatory keys.
 ```yaml
 azure:
   idrsa: path/to/your/id_rsa.pub
-  subscription your-subscribtion-id
+  subscription: your-subscribtion-id
   ...
   vm:
     admin_username: vm_username
