@@ -76,9 +76,36 @@ You have logged in. Now let us find all the subscriptions to which you have acce
 ]
 ```
 
-You **will need** the `id` key to setup **AzStudenv** configuration.
+You **will need** the `id` key corresponding to your Azure Subscription in order to setup **AzStudenv** `yaml` configuration file.
 
 
-## Install
+## Installation
+
+Clone **AzStudenv** git repositoriy locally.
+
+```shell
+$ git clone https://github.com/0xGuillaume/AzStudenv.git
+```
+
+Create python virtual environment and install required libraries.
+
+```shell
+$ python3 -m venv env
+
+$ python3 -m pip install -r requirements.txt
+```
+
+Update `azstudenv/config.yaml` file with mandatory keys.
+
+```yaml
+azure:
+  idrsa: path/to/your/id_rsa.pub
+  subscription your-subscribtion-id
+  ...
+  vm:
+    admin_username: vm_username
+```
+
+
 
 
