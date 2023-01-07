@@ -101,7 +101,7 @@ $ source env/bin/activate
 $ python3 -m pip install -r requirements.txt
 ```
 
-Update `azstudenv/config.yaml` file with mandatory keys.
+Update `azstudenv/config.yaml` file with 3 mandatory keys.
 
 ```yaml
 azure:
@@ -112,6 +112,10 @@ azure:
     admin_username: vm_username
 ```
 
+## Usage
 
 
+## Python dependencies
 
+
+-  [`test`](http)
