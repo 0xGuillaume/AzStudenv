@@ -101,6 +101,9 @@ $ source env/bin/activate
 $ python3 -m pip install -r requirements.txt
 ```
 
+
+## Configuration
+
 Update `azstudenv/config.yaml` file with 3 mandatory keys.
 
 ```yaml
@@ -110,6 +113,14 @@ azure:
   ...
   vm:
     admin_username: vm_username
+```
+
+By default Azure `location` is configured on `FranceCentral` but you can easily changed by another available Azure region.
+
+```yaml
+azure:
+  ...
+  location: FranceCentral
 ```
 
 ## Usage
