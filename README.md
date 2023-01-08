@@ -126,9 +126,9 @@ If you would like to run **AzStudenv** from anywhere follow steps below :
     ```
 
 * Create a [symbolic link](https://en.wikipedia.org/wiki/Symbolic_link) in `/bin/`.
-```
-$ sudo ln -s AzStudenv/azstudenv/main.py azstudenv
-```
+    ```
+    $ sudo ln -s AzStudenv/azstudenv/main.py azstudenv
+    ```
 
 
 ## Linting
