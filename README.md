@@ -120,7 +120,7 @@ azure:
 
 If you would like to run **AzStudenv** from anywhere follow steps below :
 
-* Make the main file runnable.
+* Make the `main.py` file executable.
     ```shell
     $ chmod +x AzStudenv/azstudenv/main.py
     ```
@@ -129,6 +129,8 @@ If you would like to run **AzStudenv** from anywhere follow steps below :
     ```
     $ sudo ln -s AzStudenv/azstudenv/main.py azstudenv
     ```
+
+* Now you can use **AzStudenv** from anywhere in your terminal.
 
 
 ## Linting
