@@ -116,6 +116,20 @@ azure:
 
 
 
+## Run from everywhere
+
+If you would like to run **AzStudenv** from anywhere follow steps below :
+
+* Make the main file runnable.
+    ```shell
+    $ chmod +x AzStudenv/azstudenv/main.py
+    ```
+
+* Create a [symbolic link](https://en.wikipedia.org/wiki/Symbolic_link) in `/bin/`.
+```
+$ sudo ln -s AzStudenv/azstudenv/main.py azstudenv
+```
+
 
 ## Linting
 
