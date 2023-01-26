@@ -1,8 +1,8 @@
 """."""
 import subprocess
 from pathlib import Path
-from common.files import Console
 from colorama import Fore
+from common.files import Console
 
 
 class Terraform:
@@ -29,7 +29,7 @@ class Terraform:
         """Apply terraform files."""
 
         apply = subprocess.Popen(
-                ["terraform", "-chdir=terraform/", "apply", "-auto-approve", "-no-color"], 
+                ["terraform", "-chdir=terraform/", "apply", "-auto-approve", "-no-color"],
                 shell=False, stdout=subprocess.PIPE, encoding=None
         )
 
