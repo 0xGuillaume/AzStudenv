@@ -64,14 +64,11 @@ def main(config:str) -> None:
     if not Terraform.is_init():
         return
 
-
-    """
     if Terraform.apply():
         Terraform.output(tf_state)
         message = ("All Azure resources have been created. Check your"
             "Azure Portal (https://portal.azure.com/) for more details.")
         Console.info(message)
-    """
 
 
 if __name__ == "__main__":
@@ -81,10 +78,6 @@ if __name__ == "__main__":
         CONFIG_FILE = "terraform/config.yaml"
         CONFIG = Yaml.read(CONFIG_FILE)
         main(CONFIG_FILE)
-        #print(os.curdir)
-
-        #test = Path(__file__).parent / "config.yaml"
-        #print(test)
 
     except FileNotFoundError as error:
         Console.error(CONFIG_FILE, error)
