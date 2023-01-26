@@ -7,6 +7,7 @@ from pathlib import Path
 from common.tf import Terraform
 from common.files import Yaml, Json, Console
 from common.parser import ConfigCompliant, ConfigSetup, ArgumentsCheck
+from common.headers import header
 
 
 def args_parser() -> object:
@@ -42,8 +43,15 @@ def main(config:str) -> None:
     """Main function."""
 
     arguments = args_parser()
+    header()
     config_compliant = bool(ConfigCompliant(CONFIG))
     tf_state = Json.read("terraform/terraform.tfstate")
+
+    if not Terraform.has_been_destroyed(tf_state):
+        return
+
+    if not Terraform.is_init():
+        return
 
     if not config_compliant:
         return
@@ -58,13 +66,8 @@ def main(config:str) -> None:
 
     Console.info("Waiting for Terraform script to execute...")
 
-    if not Terraform.has_been_destroyed(tf_state):
-        return
-
-    if not Terraform.is_init():
-        return
-
     if Terraform.apply():
+        tf_state = Json.read("terraform/terraform.tfstate")
         Terraform.output(tf_state)
         message = ("All Azure resources have been created. Check your"
             "Azure Portal (https://portal.azure.com/) for more details.")
