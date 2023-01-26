@@ -58,8 +58,8 @@ class Terraform:
     def is_init(cls) -> bool:
         """Check wether or not Terraform has been init."""
 
-        tf_dir = Path("../terraform/.terraform/").is_dir()
-        tf_lock = Path("../terraform/.terraform.lock.hcl").is_file()
+        tf_dir = Path("terraform/.terraform/").is_dir()
+        tf_lock = Path("terraform/.terraform.lock.hcl").is_file()
 
         if not tf_dir:
             message = ("Directory not found. You probably did not run"
@@ -102,3 +102,17 @@ class Terraform:
                         f"\t- {hostname} : ssh {user}@{ip_address}\n\n" + Fore.RESET
 
         Console.info(message)
+
+
+    @classmethod
+    def has_been_destroyed(cls, tfstate:str) -> bool:
+        """Check wether or not previous terraform build has been destroyed"""
+
+        ressources = tfstate["resources"]
+
+        if ressources:
+            message = "Tfstate file not empty. Make sure you destroyed your previous build."
+            Console.warning(message)
+            return False
+
+        return True
