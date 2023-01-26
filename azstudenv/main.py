@@ -1,5 +1,9 @@
+#!/bin/python3
+
 """."""
+import os
 import argparse
+from pathlib import Path
 from common.tf import Terraform
 from common.files import Yaml, Json, Console
 from common.parser import ConfigCompliant, ConfigSetup, ArgumentsCheck
@@ -39,6 +43,7 @@ def main(config:str) -> None:
 
     arguments = args_parser()
     config_compliant = bool(ConfigCompliant(CONFIG))
+    tf_state = Json.read("terraform/terraform.tfstate")
 
     if not config_compliant:
         return
@@ -53,23 +58,33 @@ def main(config:str) -> None:
 
     Console.info("Waiting for Terraform script to execute...")
 
+    if not Terraform.has_been_destroyed(tf_state):
+        return
+
     if not Terraform.is_init():
         return
 
+
+    """
     if Terraform.apply():
-        TF_STATE = Json.read("terraform/terraform.tfstate")
-        Terraform.output(TF_STATE)
+        Terraform.output(tf_state)
         message = ("All Azure resources have been created. Check your"
             "Azure Portal (https://portal.azure.com/) for more details.")
         Console.info(message)
+    """
 
 
 if __name__ == "__main__":
 
     try:
-        CONFIG_FILE = "config.yaml"
+        CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
+        CONFIG_FILE = "terraform/config.yaml"
         CONFIG = Yaml.read(CONFIG_FILE)
         main(CONFIG_FILE)
+        #print(os.curdir)
+
+        #test = Path(__file__).parent / "config.yaml"
+        #print(test)
 
     except FileNotFoundError as error:
         Console.error(CONFIG_FILE, error)
