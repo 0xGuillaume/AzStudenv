@@ -1,61 +1,54 @@
 """."""
 import argparse
+import typer
+from typing import Tuple
+from files import Yaml
 
 
-class ArgsParser:
-    """."""
-
-    def __init__(self):
-
-        parser = argparse.ArgumentParser()
+app = typer.Typer()
 
 
+class CliParser:
+    """
+    """
 
-        parser.add_argument(
-            "-i", 
-            "--image", 
-            help="ISO images",
-            required=True
-        )
-        parser.add_argument(
-            "-p", 
-            "--poc", 
-            help="POC name",
-            required=True
-        )
-        parser.add_argument(
-            "-a", 
-            "--amount", 
-            help="Amout of vms to create",
-            required=True
-        )
+    def __init__(self) -> None:
+        """Init CliParser class."""
 
 
-        self.subparser = parser.add_subparsers(title="Applying", help="Commands", dest="apply")
+    @app.command()
+    def infra(amount:int = typer.Argument(..., help="Amount of virtual machines to create.", show_default=False),
+            images:str = typer.Argument(("debian", "rhel", "ubuntu"), help="Which image to create."),
+            poc:str = typer.Argument(..., help="The name of POC.", show_default=False)
+        ) -> None:
+        """
+        Configure Azure infrastructure : POC, Vms (amount), Images (ISO).
+        """
+        print(f"Configuring infrastructure")
 
-        parser_build = self.subparser.add_parser(
-                "build", 
-                help="Build AzStuden configuration", 
-                add_help=False, 
-                parents=[parser]
-        )
 
-        parser_apply = self.subparser.add_parser(
-                "apply", 
-                help="Applying Terraform plan", 
-                add_help=False, 
-                parents=[parser]
-        )
+    @app.command()
+    def build() -> None:
+        """
+        Build Azure infrastructure using Terraform.
 
-        parser_destroy = self.subparser.add_parser(
-                "destroy", 
-                help="Destroying Terraform plan", 
-                add_help=False, 
-                parents=[parser]
-        )
+        Terraform command used : terraform apply --auto-approve
+        """
+        print(f"Building infrastructure")
 
-        args = parser.parse_args()
 
-        print(args)
+    @app.command()
+    def destroy() -> None:
+        """
+        Destroy Azure infrastructure using Terraform.
 
-ArgsParser()
+        Terraform command used : terraform destroy --auto-approve
+        """
+        print(f"Destroying infrastructure")
+
+
+
+#if __name__ == "__main__":
+CliParser()
+app()
+
