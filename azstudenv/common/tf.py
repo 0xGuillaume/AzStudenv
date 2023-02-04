@@ -52,6 +52,19 @@ class Terraform:
 
         return True
 
+    
+    @classmethod
+    def destroy(cls):
+        """Destroy current AzStudenv infrastructure"""
+
+        destroy = subprocess.Popen(
+                ["terraform", "-chdir=terraform/", "destroy", "-auto-approve", "-no-color"],
+                shell=False, stdout=subprocess.PIPE, encoding=None
+        )
+
+        return True
+
+
 
 
     @classmethod
