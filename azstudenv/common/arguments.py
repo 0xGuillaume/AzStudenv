@@ -1,8 +1,39 @@
 """."""
-import argparse
 import typer
+from enum import Enum
 from typing import Tuple
-from files import Yaml
+
+
+DEBIAN = "debian"
+RHEL = "rhel"
+UBUNTU = "ubuntu"
+
+
+
+
+class VmImages(str, Enum):
+    """
+    """
+
+    debian  = DEBIAN
+    rhel    = RHEL
+    ubuntu  = UBUNTU
+
+
+class VmAmount(str, Enum):
+    """
+    """
+    
+    one = 1
+    two = 2
+    three = 3
+
+
+
+def complete_images() -> list:
+    """Return list of availanle images"""
+
+    return [DEBIAN, RHEL, UBUNTU]
 
 
 app = typer.Typer()
@@ -17,8 +48,8 @@ class CliParser:
 
 
     @app.command()
-    def infra(amount:int = typer.Argument(..., help="Amount of virtual machines to create.", show_default=False),
-            images:str = typer.Argument(("debian", "rhel", "ubuntu"), help="Which image to create."),
+    def infra(amount:VmAmount = typer.Argument(VmAmount, help="Amount of virtual machines to create.", show_default=False),
+            images:VmImages = typer.Argument(VmImages, help="Which image to create", show_default=False, autocompletion=complete_images),
             poc:str = typer.Argument(..., help="The name of POC.", show_default=False)
         ) -> None:
         """
