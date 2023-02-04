@@ -203,7 +203,7 @@ class ArgumentsCheck:
     def __bool__(self) -> bool:
         """"""
 
-        return self.poc_name() and self.images_choice()
+        return self.poc_name()
 
 
     def poc_name(self) -> bool:
@@ -217,24 +217,3 @@ class ArgumentsCheck:
             Console.argument(message)
 
         return name.isalpha()
-
-
-    def images_choice(self) -> bool:
-        """Check if number of vms match with selected ISO images."""
-
-        images = self.args.image
-        images_count = int(self.args.n)
-
-        if len(images) == 2 and images_count == 3:
-            message = ("When you create 3 vms you must specify one same image "
-                "for all three of them or one image by vm.")
-            Console.argument(message)
-            return False
-
-        if len(images) > images_count:
-            message = (f"There are more images specified ({len(images)}) "
-                    f"rather than vm to create ({images_count}).")
-            Console.argument(message)
-            return False
-
-        return True
