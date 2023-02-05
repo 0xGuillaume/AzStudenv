@@ -83,7 +83,7 @@ class CliParser:
 
         if (
             not ArgumentsCheck(poc)
-            or not Terraform.has_been_destroyed(state)
+            #or not Terraform.has_been_destroyed(state)
             or not Terraform.is_init()
             or not bool(ConfigCompliant(CONFIG))
         ):
@@ -104,8 +104,7 @@ class CliParser:
         Terraform command used : terraform apply --auto-approve
         """
 
-        print(f"Building infrastructure")
-
+        Terraform.apply()
 
 
 
@@ -118,7 +117,7 @@ class CliParser:
         Terraform command used : terraform destroy --auto-approve
         """
 
-        print(f"Destroying infrastructure")
+        Terraform.destroy()
 
 
 def cli() -> None:
