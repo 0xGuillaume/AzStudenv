@@ -8,44 +8,18 @@ from common.tf import Terraform
 from common.files import Yaml, Json, Console
 from common.parser import ConfigCompliant, ConfigSetup, ArgumentsCheck
 from common.headers import header
-
-
-def args_parser() -> object:
-    """Set available arguments."""
-
-    parser = argparse.ArgumentParser(
-                prog = "AzStudenv",
-                description = "What the programs does.",
-            )
-
-    parser.add_argument("-n",
-                choices=[str(digit) for digit in range(1, 3 + 1)],
-                required=True,
-                help=""
-            )
-
-    parser.add_argument("-i", "--image",
-                choices=["debian", "ubuntu", "rhel"],
-                required=True,
-                nargs="*",
-                help=""
-            )
-
-    parser.add_argument("-p", "--poc",
-            required=True,
-            help=""
-        )
-
-    return parser.parse_args()
+from common.arguments import CliParser, cli
 
 
 def main(config:str) -> None:
     """Main function."""
 
-    arguments = args_parser()
+    CliParser("test", "test", "test")
+
     header()
     config_compliant = bool(ConfigCompliant(CONFIG))
     tf_state = Json.read("terraform/terraform.tfstate")
+
 
     if not Terraform.has_been_destroyed(tf_state):
         return
@@ -58,11 +32,8 @@ def main(config:str) -> None:
 
     Console.info("Yaml configuration is compliant.")
 
-    if not bool(ArgumentsCheck(arguments)):
-        return
-
-    config = ConfigSetup(CONFIG_FILE, CONFIG, arguments)
-    config.fill()
+    #config = ConfigSetup(CONFIG_FILE, CONFIG, arguments)
+    #config.fill()
 
     Console.info("Waiting for Terraform script to execute...")
 
