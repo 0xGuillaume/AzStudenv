@@ -1,5 +1,8 @@
 """."""
 import subprocess
+import typer
+import time
+from rich.progress import Progress
 from pathlib import Path
 from colorama import Fore
 from common.files import Console
@@ -34,21 +37,25 @@ class Terraform:
         )
 
         count = 0
-        while True:
-            line = apply.stdout.readline().decode("utf-8")
+        
+        with Progress() as progress:
 
-            if not line and not count:
-                message = "Terraform error while executing. Refer to the error message above."
-                Console.error("*.tf", message)
-                return False
+            building = progress.add_task("[green]Building...", total=9)
 
-            if not line and count:
-                break
+            while True:
+                line = apply.stdout.readline().decode("utf-8")
 
-            if "Creation complete after" in line:
-                Terraform.output_format(line)
+                if not line and not count:
+                    message = "Terraform error while executing. Refer to the error message above."
+                    Console.error("*.tf", message)
+                    return False
 
-            count += 1
+                if not line and count:
+                    break
+
+                if "Creation complete after" in line:
+                    progress.update(building, advance=1)
+                    count += 1
 
         return True
 
@@ -58,9 +65,10 @@ class Terraform:
         """Destroy current AzStudenv infrastructure"""
 
         destroy = subprocess.Popen(
-                ["terraform", "-chdir=terraform/", "destroy", "-auto-approve", "-no-color"],
-                shell=False, stdout=subprocess.PIPE, encoding=None
+                ["terraform", "-chdir=terraform/", "destroy", "--auto-approve"],#, "-no-color"],
+                shell=True, stdout=subprocess.PIPE, encoding=None
         )
+        destroy.wait()
 
         return True
 
