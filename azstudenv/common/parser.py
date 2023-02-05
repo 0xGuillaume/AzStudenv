@@ -2,6 +2,8 @@
 import string
 from pathlib import Path
 from common.files import Yaml, Console
+import typer
+from rich.progress import Progress, SpinnerColumn, TextColumn
 
 
 class ConfigCompliant:
@@ -113,7 +115,6 @@ class ConfigCompliant:
         return True
 
 
-
 class ConfigSetup:
     """
     .
@@ -123,12 +124,11 @@ class ConfigSetup:
         """Inits ConfigSetup class."""
 
         self.args               = args
-        print(self.args.amount)
-        print(self.args.poc)
-        print(self.args.image)
         self.conf               = config
         self.config_filename    = config_filename
+
         self.clear()
+
 
     def clear(self) -> None:
         """Clear specific YAML config keys before dumping new data in."""
@@ -152,7 +152,6 @@ class ConfigSetup:
             image = self.args.image[:3].upper()
             hostname = f"AZUX{image}0{vm + 1}"
             hostnames_[hostname] = self.args.image
-            print(hostnames_)
 
         return hostnames_
 
