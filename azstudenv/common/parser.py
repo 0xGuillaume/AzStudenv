@@ -122,9 +122,12 @@ class ConfigSetup:
     def __init__(self, config_filename:str, config:dict, args:object):
         """Inits ConfigSetup class."""
 
-        self.args = args
-        self.conf = config
-        self.config_filename = config_filename
+        self.args               = args
+        print(self.args.amount)
+        print(self.args.poc)
+        print(self.args.image)
+        self.conf               = config
+        self.config_filename    = config_filename
         self.clear()
 
     def clear(self) -> None:
@@ -142,23 +145,14 @@ class ConfigSetup:
     def hostnames(self) -> dict:
         """Set hostname and ISO image for Az virtual machines."""
 
-        images = self.args.image
-        vms = int(self.args.n)
+        vms = int(self.args.amount)
         hostnames_ = {}
 
-        if vms == len(images):
-            count = list(range(0, vms))
-            indexes = [1] * vms
-
-        elif vms > len(images):
-            count = [0] * vms
-            indexes = list(range(1, vms + 1))
-
-        for vm_ in range(0, vms):
-            image = images[count[vm_]][:3].upper()
-            index = indexes[vm_]
-            hostname = f"AZUX{image}0{index}"
-            hostnames_[hostname] = images[count[vm_]]
+        for vm in range(0, vms):
+            image = self.args.image[:3].upper()
+            hostname = f"AZUX{image}0{vm + 1}"
+            hostnames_[hostname] = self.args.image
+            print(hostnames_)
 
         return hostnames_
 
@@ -184,8 +178,7 @@ class ConfigSetup:
 
         Yaml.write(self.config_filename, self.conf)
 
-        vms = len(self.hostnames())
-        message = f"Configuration applied for {self.poc_name()} with {vms} virtual machine(s)."
+        message = f"Configuration applied for {self.poc_name()} with {self.args.amount} virtual machine(s)."
         Console.info(message)
 
 
@@ -194,10 +187,10 @@ class ArgumentsCheck:
     """Check if arguments are well formatted.
     """
 
-    def __init__(self, args):
+    def __init__(self, poc:str):
         """"""
 
-        self.args = args
+        self.poc = poc
 
 
     def __bool__(self) -> bool:
@@ -209,7 +202,7 @@ class ArgumentsCheck:
     def poc_name(self) -> bool:
         """Check if poc name is alphanumeric only."""
 
-        name = self.args.poc
+        name = self.poc
 
         if not name.isalpha():
             message = (f"'{name}' is not a valid name. "
