@@ -65,14 +65,14 @@ class Terraform:
         """Destroy current AzStudenv infrastructure"""
 
         destroy = subprocess.Popen(
-                ["terraform", "-chdir=terraform/", "destroy", "--auto-approve"],#, "-no-color"],
+                ["terraform", "-chdir=terraform/", "destroy", "-auto-approve", "-no-color"],
                 shell=True, stdout=subprocess.PIPE, encoding=None
         )
-        destroy.wait()
+
+        while True:
+            line = destroy.stdout.readline().decode("utf-8")
 
         return True
-
-
 
 
     @classmethod
