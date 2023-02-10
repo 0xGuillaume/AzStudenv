@@ -3,9 +3,11 @@ import subprocess
 import typer
 import time
 from rich.progress import Progress
+from rich.progress import Progress, SpinnerColumn, TextColumn
 from pathlib import Path
 from colorama import Fore
 from common.files import Console
+from typing import Literal
 
 
 class Terraform:
