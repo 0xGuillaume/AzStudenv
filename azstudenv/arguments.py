@@ -4,6 +4,7 @@ import typer
 from enum import Enum
 from typing import Tuple
 from rich.console import Console
+from rich.progress import Progress, SpinnerColumn, TextColumn
 from common.tf import Terraform
 from common.parser import ConfigCompliant, ArgumentsCheck, ConfigSetup
 from common.files import Yaml, Json
