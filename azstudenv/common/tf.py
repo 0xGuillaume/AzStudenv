@@ -59,20 +59,33 @@ class Terraform:
 
         return True
 
-    
+
     @classmethod
-    def destroy(cls):
-        """Destroy current AzStudenv infrastructure"""
+    def command(self, option: Literal["apply", "destroy"]) -> None:
+        """
+        """
 
-        destroy = subprocess.Popen(
-                ["terraform", "-chdir=terraform/", "destroy", "-auto-approve", "-no-color"],
-                shell=True, stdout=subprocess.PIPE, encoding=None
-        )
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            transient=True
+        ) as progress:
 
-        while True:
-            line = destroy.stdout.readline().decode("utf-8")
+            with subprocess.Popen(
+                ["terraform", option, "-auto-approve", "-no-color"], 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE,
+            ) as process:
+                task = progress.add_task(
+                    description=f"{option.capitalize()}ing AzStudenv infrastructure...", 
+                    total=None
+                )
 
-        return True
+                for line in process.stdout:
+                    line = line.decode("utf-8")
+
+                    if "complete after" in line:
+                        print(line)
 
 
     @classmethod
