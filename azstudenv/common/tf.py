@@ -74,7 +74,7 @@ class Terraform:
         ) as progress:
 
             with subprocess.Popen(
-                ["terraform", option, "-auto-approve", "-no-color"], 
+                ["terraform", "-chdir=terraform/", option, "-auto-approve", "-no-color"], 
                 stdout=subprocess.PIPE, 
                 stderr=subprocess.PIPE,
             ) as process:
