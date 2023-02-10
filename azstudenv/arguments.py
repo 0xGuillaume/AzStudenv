@@ -59,7 +59,6 @@ class Args:
         self.poc    = poc
 
 
-
 class CliParser:
     """
     """
@@ -95,7 +94,6 @@ class CliParser:
         config.fill()
 
 
-
     @app.command()
     def build() -> None:
         """
@@ -104,9 +102,7 @@ class CliParser:
         Terraform command used : terraform apply --auto-approve
         """
 
-        Terraform.apply()
-
-
+        Terraform.command("apply")
 
 
     @app.command()
@@ -117,7 +113,7 @@ class CliParser:
         Terraform command used : terraform destroy --auto-approve
         """
 
-        Terraform.destroy()
+        Terraform.command("destroy")
 
 
 def cli() -> None:
