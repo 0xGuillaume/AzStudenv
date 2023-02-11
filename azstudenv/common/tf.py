@@ -1,13 +1,15 @@
 """."""
 import subprocess
 import typer
-import time
-from rich.progress import Progress
-from rich.progress import Progress, SpinnerColumn, TextColumn
+from time import sleep
+from rich.console import Console
 from pathlib import Path
 from colorama import Fore
-from common.files import Console
+#from common.files import Console
 from typing import Literal
+
+
+console = Console()
 
 
 class Terraform:
@@ -15,11 +17,11 @@ class Terraform:
     .
     """
 
+
     def __init__(self) -> None:
         """Inits Terraform class."""
 
     
-    @classmethod
     def resource_format(self, output:str) -> str:
         """"""
 
@@ -30,47 +32,63 @@ class Terraform:
         resource = resource.replace("_", " ")
         resource = resource.capitalize()
 
-        fmt = f"{resource} - {id_}" 
+        fmt = f"[green]✓[/green] [bold]{resource}[/bold] - {id_}"
 
         return fmt
 
 
-    @classmethod
-    def output_format(cls, output:str) -> str:
-        """Format terraform console output."""
+    def _actions(self, option:str) -> dict:
+        """"""
 
-        output = output.split()
-        resource = output[0].capitalize()
+        actions = [
+            {
+                "option": "apply",
+                "color": "green", 
+                "action": "Created",
+                "result": "built"
+            },
+            {
+                "option": "destroy",
+                "color": "red", 
+                "action": "Destroyed", 
+                "result": "destroyed"
+            }
+        ]
 
-        Console.terraform(resource)
+        return [action for action in actions if action["option"] == option][0]
 
+
+    
 
     @classmethod
     def command(self, option: Literal["apply", "destroy"]) -> None:
         """
         """
 
-        with Progress(
-            SpinnerColumn(),
-            TextColumn("[progress.description]{task.description}"),
-            transient=True
-        ) as progress:
+        amount = 0
+        actions = self._actions(option)
+
+        with console.status(
+            f"[magenta]{option.capitalize()}ing AzStudenv infrastructure...", 
+            spinner="bouncingBar"
+        ) as status:
 
             with subprocess.Popen(
                 ["terraform", "-chdir=terraform/", option, "-auto-approve", "-no-color"], 
                 stdout=subprocess.PIPE, 
                 stderr=subprocess.PIPE,
             ) as process:
-                task = progress.add_task(
-                    description=f"{option.capitalize()}ing AzStudenv infrastructure...", 
-                    total=None
-                )
 
                 for line in process.stdout:
                     line = line.decode("utf-8")
 
                     if "complete after" in line:
-                        print(self.resource_format(line))
+                        sleep(0.5)
+                        message = f"{self.resource_format(line)} - {actions[option]}"
+                        console.log(message)
+                        amount += 1
+
+        console.print(f"[bold green] Infrastructure successfully built! {amount} resources created")
 
 
     @classmethod
@@ -94,36 +112,6 @@ class Terraform:
 
 
     @classmethod
-    def output(cls, tfstate:str) -> None:
-        """Parse *.tfstate json file to get ressources values."""
-
-        try:
-            resources = tfstate["resources"]
-
-        except FileNotFoundError:
-            message = ("File `terraform.tfstate` not found. "
-                "Enable to display SSH commands to connect to virtual machines.")
-            Console.warning(message)
-            return
-
-        message = "Follow the SSH command(s) below to connect to your virtual machine(s) :\n\n"
-
-        for resource in resources:
-            if resource["type"] == "azurerm_linux_virtual_machine":
-                for instance in resource["instances"]:
-
-                    instance    = instance["attributes"]
-                    hostname    = instance["computer_name"]
-                    user        = instance["admin_username"]
-                    ip_address  = instance["public_ip_address"]
-
-                    message += Fore.CYAN + \
-                        f"\t- {hostname} : ssh {user}@{ip_address}\n\n" + Fore.RESET
-
-        Console.info(message)
-
-
-    @classmethod
     def has_been_destroyed(cls, tfstate:str) -> bool:
         """Check wether or not previous terraform build has been destroyed"""
 
@@ -135,3 +123,6 @@ class Terraform:
             return False
 
         return True
+
+tf = Terraform()
+print(tf._actions("apply"))
