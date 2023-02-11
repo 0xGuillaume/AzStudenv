@@ -5,7 +5,6 @@ from time import sleep
 from rich.console import Console
 from pathlib import Path
 from colorama import Fore
-#from common.files import Console
 from typing import Literal
 
 
@@ -21,8 +20,31 @@ class Terraform:
     def __init__(self) -> None:
         """Inits Terraform class."""
 
+
+    @classmethod
+    def _actions(self, option:str) -> dict:
+        """"""
+
+        actions = [
+            {
+                "option": "apply",
+                "color": "green", 
+                "state": "created",
+                "result": "built"
+            },
+            {
+                "option": "destroy",
+                "color": "red", 
+                "state": "destroyed", 
+                "result": "destroyed"
+            }
+        ]
+
+        return [action for action in actions if action["option"] == option][0]
     
-    def resource_format(self, output:str) -> str:
+
+    @classmethod
+    def resource_format(self, output:str, action:str) -> str:
         """"""
 
         output = output.split(":")[0].split(".")
@@ -32,33 +54,13 @@ class Terraform:
         resource = resource.replace("_", " ")
         resource = resource.capitalize()
 
-        fmt = f"[green]✓[/green] [bold]{resource}[/bold] - {id_}"
+        color = action["color"]
+        state = action["state"].capitalize()
+
+        fmt = f"[{color}]✓[/{color}] [bold]{resource}[/bold] - {id_} ... [bold {color}]{state}."
 
         return fmt
 
-
-    def _actions(self, option:str) -> dict:
-        """"""
-
-        actions = [
-            {
-                "option": "apply",
-                "color": "green", 
-                "action": "Created",
-                "result": "built"
-            },
-            {
-                "option": "destroy",
-                "color": "red", 
-                "action": "Destroyed", 
-                "result": "destroyed"
-            }
-        ]
-
-        return [action for action in actions if action["option"] == option][0]
-
-
-    
 
     @classmethod
     def command(self, option: Literal["apply", "destroy"]) -> None:
@@ -66,7 +68,8 @@ class Terraform:
         """
 
         amount = 0
-        actions = self._actions(option)
+        #action = self._actions(option)
+        action = self._actions(option)
 
         with console.status(
             f"[magenta]{option.capitalize()}ing AzStudenv infrastructure...", 
@@ -83,12 +86,12 @@ class Terraform:
                     line = line.decode("utf-8")
 
                     if "complete after" in line:
-                        sleep(0.5)
-                        message = f"{self.resource_format(line)} - {actions[option]}"
+                        sleep(1)
+                        message = self.resource_format(line, action)
                         console.log(message)
                         amount += 1
 
-        console.print(f"[bold green] Infrastructure successfully built! {amount} resources created")
+        console.print(f"[bold green]Infrastructure successfully {action['result']}! {amount} resources {action['state']}.")
 
 
     @classmethod
@@ -123,6 +126,3 @@ class Terraform:
             return False
 
         return True
-
-tf = Terraform()
-print(tf._actions("apply"))
