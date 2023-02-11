@@ -18,6 +18,22 @@ class Terraform:
     def __init__(self) -> None:
         """Inits Terraform class."""
 
+    
+    @classmethod
+    def resource_format(self, output:str) -> str:
+        """"""
+
+        output = output.split(":")[0].split(".")
+        resource, id_ = output[0], output[1]
+
+        resource = resource.replace("azurerm_", "")
+        resource = resource.replace("_", " ")
+        resource = resource.capitalize()
+
+        fmt = f"{resource} - {id_}" 
+
+        return fmt
+
 
     @classmethod
     def output_format(cls, output:str) -> str:
@@ -27,39 +43,6 @@ class Terraform:
         resource = output[0].capitalize()
 
         Console.terraform(resource)
-
-
-    @classmethod
-    def apply(cls) -> bool:
-        """Apply terraform files."""
-
-        apply = subprocess.Popen(
-                ["terraform", "-chdir=terraform/", "apply", "-auto-approve", "-no-color"],
-                shell=False, stdout=subprocess.PIPE, encoding=None
-        )
-
-        count = 0
-        
-        with Progress() as progress:
-
-            building = progress.add_task("[green]Building...", total=9)
-
-            while True:
-                line = apply.stdout.readline().decode("utf-8")
-
-                if not line and not count:
-                    message = "Terraform error while executing. Refer to the error message above."
-                    Console.error("*.tf", message)
-                    return False
-
-                if not line and count:
-                    break
-
-                if "Creation complete after" in line:
-                    progress.update(building, advance=1)
-                    count += 1
-
-        return True
 
 
     @classmethod
@@ -87,7 +70,7 @@ class Terraform:
                     line = line.decode("utf-8")
 
                     if "complete after" in line:
-                        print(line)
+                        print(self.resource_format(line))
 
 
     @classmethod
