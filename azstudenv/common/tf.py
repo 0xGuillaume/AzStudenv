@@ -3,9 +3,14 @@ import subprocess
 import typer
 from time import sleep
 from rich.console import Console
+from rich.pretty import pprint
+from rich.syntax import Syntax
+from rich import print_json
+from rich import inspect
 from pathlib import Path
 from colorama import Fore
 from typing import Literal
+from common.files import Json
 
 
 console = Console()
@@ -68,7 +73,6 @@ class Terraform:
         """
 
         amount = 0
-        #action = self._actions(option)
         action = self._actions(option)
 
         with console.status(
@@ -91,7 +95,9 @@ class Terraform:
                         console.log(message)
                         amount += 1
 
-        console.print(f"[bold green]Infrastructure successfully {action['result']}! {amount} resources {action['state']}.")
+        console.print(
+            f"[bold green]Infrastructure successfully {action['result']}! {amount} resources {action['state']}."
+        )
 
 
     @classmethod
@@ -126,3 +132,31 @@ class Terraform:
             return False
 
         return True
+
+
+    @classmethod
+    def state(self) -> None:
+        """"""
+
+        resources = Json.read("./terraform/terraform.tfstate")["resources"]
+
+        if not resources:
+            console.log("[red]No infrastructure has been built.")
+            return 
+
+        console.print("[cyan]AzStudenv instances :")
+
+        for resource in resources:
+            if resource["type"] == "azurerm_linux_virtual_machine":
+                for instance in resource["instances"]:
+
+                    instance = instance["attributes"]
+
+                    host = {
+                            #"instance": instance["attributes"],
+                        "hostname": instance["computer_name"],
+                        "user": instance["admin_username"],
+                        "ip_address": instance["public_ip_address"]
+                    }
+
+                    pprint(host, expand_all=True)
