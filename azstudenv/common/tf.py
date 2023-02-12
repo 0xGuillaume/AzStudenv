@@ -128,7 +128,7 @@ class Terraform:
 
         if ressources:
             message = "Tfstate file not empty. Make sure you destroyed your previous build."
-            Console.warning(message)
+            console.log(f"[yellow]Warning - {message}")
             return False
 
         return True
