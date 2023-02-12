@@ -17,6 +17,7 @@ CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
 CONFIG_FILE = "terraform/config.yaml"
 CONFIG = Yaml.read(CONFIG_FILE)
 
+
 class VmImages(str, Enum):
     """
     """
@@ -45,9 +46,8 @@ def complete_images() -> list:
 # ==================================================
 
 
-
 app = typer.Typer()
-err_console = Console(stderr=True)
+
 
 class Args:
     """
@@ -64,7 +64,7 @@ class CliParser:
     """
 
 
-    def __init__(self) -> None:
+    def __init__(self, app) -> None:
         """Init CliParser class."""
 
 
@@ -116,9 +116,5 @@ class CliParser:
         Terraform.command("destroy")
 
 
-def cli() -> None:
-    """"""
-
+if __name__ == "__main__":
     app()
-
-cli()
