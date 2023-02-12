@@ -27,7 +27,7 @@ class Terraform:
 
 
     @classmethod
-    def _actions(self, option:str) -> dict:
+    def _actions(cls, option:str) -> dict:
         """"""
 
         actions = [
@@ -49,7 +49,7 @@ class Terraform:
     
 
     @classmethod
-    def resource_format(self, output:str, action:str) -> str:
+    def resource_format(cls, output:str, action:str) -> str:
         """"""
 
         output = output.split(":")[0].split(".")
@@ -68,7 +68,7 @@ class Terraform:
 
 
     @classmethod
-    def command(self, option: Literal["apply", "destroy"]) -> None:
+    def command(cls, option: Literal["apply", "destroy"]) -> None:
         """
         """
 
@@ -108,14 +108,14 @@ class Terraform:
         tf_lock = Path("terraform/.terraform.lock.hcl").is_file()
 
         if not tf_dir:
-            message = ("Directory not found. You probably did not run"
+            message = ("[cyan italic].terraform/[/cyan italic] directory not found. You probably did not run "
                 "`terraform init` to initiaize the Terraform working directory")
-            Console.error("./terraform", message)
+            console.log(f"[red bold]ERROR: {message}")
 
         if not tf_lock:
-            message = ("File not found. You probably did not run"
+            message = ("[cyan italic].terraform.lock.hcl[/cyan italic] file not found. You probably did not run "
                 "`terraform init` to initiaize the Terraform working directory")
-            Console.error(".terraform.lock.hcl", message)
+            console.log(f"[red bold]ERROR: {message}")
 
         return tf_dir and tf_lock
 
@@ -132,31 +132,3 @@ class Terraform:
             return False
 
         return True
-
-
-    @classmethod
-    def state(self) -> None:
-        """"""
-
-        resources = Json.read("./terraform/terraform.tfstate")["resources"]
-
-        if not resources:
-            console.log("[red]No infrastructure has been built.")
-            return 
-
-        console.print("[cyan]AzStudenv instances :")
-
-        for resource in resources:
-            if resource["type"] == "azurerm_linux_virtual_machine":
-                for instance in resource["instances"]:
-
-                    instance = instance["attributes"]
-
-                    host = {
-                            #"instance": instance["attributes"],
-                        "hostname": instance["computer_name"],
-                        "user": instance["admin_username"],
-                        "ip_address": instance["public_ip_address"]
-                    }
-
-                    pprint(host, expand_all=True)
