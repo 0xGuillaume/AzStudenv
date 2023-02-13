@@ -78,16 +78,11 @@ class CliParser:
         Configure Azure infrastructure : POC, Vms (amount), Images (ISO).
         """
 
-        state = Json.read("terraform/terraform.tfstate")
-
         if (
             not ArgumentsCheck(poc)
-            #or not Terraform.has_been_destroyed(state)
-            or not Terraform.is_init()
             or not bool(ConfigCompliant(CONFIG))
         ):
-            err_console.print("Config not working")
-            raise typer.Exit
+            return
 
         args = Args(amount.value, image.value, poc)
         config = ConfigSetup(CONFIG_FILE, CONFIG, args) 
@@ -101,6 +96,15 @@ class CliParser:
 
         Terraform command used : terraform apply --auto-approve
         """
+
+        # Config
+        config = ConfigCompliant(CONFIG)
+        
+        if not config.is_instance():
+            return
+
+        if not Terraform.is_init():
+            return
 
         Terraform.command("apply")
 

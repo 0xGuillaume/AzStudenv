@@ -115,6 +115,17 @@ class ConfigCompliant:
         return True
 
 
+    def is_instance(self) -> bool:
+        """Check wether or not there are instances."""
+
+        if not self.config["azure"]["instances"]:
+            message = 
+            Console.error(self.config_filename, message)
+            return False
+
+        return True
+
+
 class ConfigSetup:
     """
     .
