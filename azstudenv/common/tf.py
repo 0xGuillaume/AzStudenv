@@ -3,13 +3,8 @@ import subprocess
 import typer
 from time import sleep
 from rich.console import Console
-from rich.pretty import pprint
-from rich.syntax import Syntax
-from rich import print_json
-from rich import inspect
 from pathlib import Path
 from typing import Literal
-from common.files import Json
 
 
 console = Console()
@@ -67,7 +62,7 @@ class Terraform:
 
 
     @classmethod
-    def command(cls, option: Literal["apply", "destroy"]) -> None:
+    def command(self, option: Literal["apply", "destroy"]) -> None:
         """
         """
 
