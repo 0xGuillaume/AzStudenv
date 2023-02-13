@@ -8,7 +8,6 @@ from rich.syntax import Syntax
 from rich import print_json
 from rich import inspect
 from pathlib import Path
-from colorama import Fore
 from typing import Literal
 from common.files import Json
 
