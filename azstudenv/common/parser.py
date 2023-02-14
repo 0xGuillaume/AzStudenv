@@ -119,7 +119,7 @@ class ConfigCompliant:
         """Check wether or not there are instances."""
 
         if not self.config["azure"]["instances"]:
-            message = 
+            message = "No instances"
             Console.error(self.config_filename, message)
             return False
 
