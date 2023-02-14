@@ -101,12 +101,13 @@ class CliParser:
         config = ConfigCompliant(CONFIG)
         
         if not config.is_instance():
+            print(config.is_instance())
             return
 
         if not Terraform.is_init():
             return
 
-        Terraform.command("apply")
+        #Terraform.command("apply")
 
 
     @app.command()
