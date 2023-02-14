@@ -1,6 +1,10 @@
 import json
 import yaml
 from colorama import Fore
+from rich.console import Console
+
+
+console = Console()
 
 
 class Yaml:
@@ -49,49 +53,42 @@ class Console:
     .
     """
 
+
     def __init__(self):
         """Inits Console class."""
+
 
 
     @classmethod
     def info(cls, message:str) -> None:
         """Display an informative message."""
 
-        output = f"[INFO] [AZSTUDENV] {message}"
+        output = f"[cyan][INFO] [AZSTUDENV] {message}"
 
-        return print(Fore.GREEN + output + Fore.RESET)
+        return console.log(output)
 
 
     @classmethod
     def error(cls, file:str, message:str) -> None:
         """Display an error message."""
 
-        output = f"[ERROR] - {file} - {message}"
+        output = f"[red][ERROR] - {file} - {message}"
 
-        return print(Fore.RED + output + Fore.RESET)
+        return console.log(output)
 
     @classmethod
     def warning(cls, message:str) -> None:
         """Display a warning message."""
 
-        output = f"[WARN] [TERRAFORM] {message}"
+        output = f"[yellow][WARN] [TERRAFORM] {message}"
 
-        return print(Fore.YELLOW + output + Fore.RESET)
+        return console.log(output)
 
 
     @classmethod
     def terraform(cls, resource:str) -> None:
         """Display terraform message."""
 
-        output = f"[INFO] [TERRAFORM] {resource} has been created."
+        output = f"[magenta][INFO] [TERRAFORM] {resource} has been created."
 
-        return print(Fore.YELLOW + output + Fore.RESET)
-
-
-    @classmethod
-    def argument(cls, message:str) -> None:
-        """Handle error during argument parsing."""
-
-        output = f"[ARGUMENTS] {message}"
-
-        return print(Fore.MAGENTA + output + Fore.RESET)
+        return console.log(output)
