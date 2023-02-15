@@ -207,7 +207,6 @@ class ArgumentsCheck:
     def poc_name(self, name) -> bool:
         """Check if poc name is alphanumeric only."""
 
-
         if not name.isalpha():
             message = (f"'{name}' is not a valid name. "
                 "Only letters are allowed for naming POC.")
@@ -215,13 +214,19 @@ class ArgumentsCheck:
 
         return name.isalpha()
 
+
     @classmethod
     def subscription(self, id_:str) -> bool:
         """Check wether or not Azure subscription ID is well formatted"""
 
         pattern = "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}" 
 
-        return bool(re.match(pattern, id_))
+        if not bool(re.match(pattern, id_)):
+            message = f"Given Azure subscription [cyan bold]{id_}[/cyan bold] does not respect Azure subscription pattern."
+            Console.error("config.yaml", message)
+            return False
+
+        return True
 
 
                 
