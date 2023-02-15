@@ -1,8 +1,10 @@
 """."""
 import re
 import string
+import os
 from pathlib import Path
 from common.files import Yaml, Console
+from typing import Union
 import typer
 from rich.progress import Progress, SpinnerColumn, TextColumn
 
@@ -228,6 +230,17 @@ class ArgumentsCheck:
 
         return True
 
+
+    @classmethod
+    def is_sshkey(self, path:Union[str, os.PathLike]) -> bool:
+        """Check wether or not ssh_key path exists"""
+
+        if not Path(path).exists():
+            message = f"SSH Public key [cyan bold]{path}[/cyan bold] does not exist."
+            Console.error("config.yaml", message)
+            return False
+        
+        return True
 
                 
 
