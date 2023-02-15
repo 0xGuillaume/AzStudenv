@@ -129,13 +129,16 @@ class CliParser:
         """Configure : Azure subscription, ssh public key, user"""
 
         console = Console()
+        error = False
 
-        #if not ssh_key.exists()
-        #    return
+        if not ArgumentsCheck.is_sshkey(ssh_key):
+            error = True
 
         if not ArgumentsCheck.subscription(subscription):
-            return
+            error = True
 
+        if error:
+            return
 
 
         
