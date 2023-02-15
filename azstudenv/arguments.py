@@ -2,7 +2,8 @@
 import os
 import typer
 from enum import Enum
-from typing import Tuple
+from typing import Tuple, Optional
+from pathlib import Path
 from rich.console import Console
 from common.tf import Terraform
 from common.parser import ConfigCompliant, ArgumentsCheck, ConfigSetup
@@ -79,7 +80,7 @@ class CliParser:
         """
 
         if (
-            not ArgumentsCheck(poc)
+            not ArgumentsCheck.poc_name(poc)
             or not bool(ConfigCompliant(CONFIG))
         ):
             return
@@ -97,17 +98,15 @@ class CliParser:
         Terraform command used : terraform apply --auto-approve
         """
 
-        # Config
         config = ConfigCompliant(CONFIG)
-        
-        if not config.is_instance():
-            print(config.is_instance())
+
+        if not config.is_infra():
             return
 
         if not Terraform.is_init():
             return
 
-        #Terraform.command("apply")
+        Terraform.command("apply")
 
 
     @app.command()
@@ -119,6 +118,29 @@ class CliParser:
         """
 
         Terraform.command("destroy")
+
+
+    @app.command()
+    def config(
+        subscription: str = typer.Option(..., prompt="Enter your Azure subscription ID", hide_input=True),
+        ssh_key: Optional[Path] = typer.Option(..., prompt="Enter the path of your id_rsa.pub key"),
+        user: str = typer.Option(..., prompt="Enter the username you would like to use"),
+    ) -> None:
+        """Configure : Azure subscription, ssh public key, user"""
+
+        console = Console()
+
+        if not ssh_key.exists():
+            print("error")
+
+        if not ArgumentsCheck.subscription(subscription):
+            print("oopsy daisy")
+
+
+
+        
+        
+
 
 
 if __name__ == "__main__":
