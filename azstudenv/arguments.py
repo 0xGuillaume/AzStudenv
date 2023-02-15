@@ -130,11 +130,11 @@ class CliParser:
 
         console = Console()
 
-        if not ssh_key.exists():
-            print("error")
+        #if not ssh_key.exists()
+        #    return
 
         if not ArgumentsCheck.subscription(subscription):
-            print("oopsy daisy")
+            return
 
 
 
