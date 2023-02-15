@@ -1,4 +1,5 @@
 """."""
+import re
 import string
 from pathlib import Path
 from common.files import Yaml, Console
@@ -115,11 +116,12 @@ class ConfigCompliant:
         return True
 
 
-    def is_instance(self) -> bool:
-        """Check wether or not there are instances."""
+    def is_infra(self) -> bool:
+        """Check wether or not infrastructure has been set up."""
 
         if not self.config["azure"]["instances"]:
-            message = "No instances"
+            message = ("No infrastrucure has been setup."
+                "Try to run [cyan bold]`infra`[/cyan bold] command.")
             Console.error(self.config_filename, message)
             return False
 
@@ -197,26 +199,31 @@ class ArgumentsCheck:
     """Check if arguments are well formatted.
     """
 
-    def __init__(self, poc:str):
+    def __init__(self):
         """"""
 
-        self.poc = poc
 
-
-    def __bool__(self) -> bool:
-        """"""
-
-        return self.poc_name()
-
-
-    def poc_name(self) -> bool:
+    @classmethod
+    def poc_name(self, name) -> bool:
         """Check if poc name is alphanumeric only."""
 
-        name = self.poc
 
         if not name.isalpha():
             message = (f"'{name}' is not a valid name. "
                 "Only letters are allowed for naming POC.")
-            Console.argument(message)
+            Console.error("pouet", message)
 
         return name.isalpha()
+
+    @classmethod
+    def subscription(self, id_:str) -> bool:
+        """Check wether or not Azure subscription ID is well formatted"""
+
+        pattern = "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}" 
+
+        return bool(re.match(pattern, id_))
+
+
+                
+
+
