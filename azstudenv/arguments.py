@@ -106,6 +106,12 @@ class CliParser:
         if not Terraform.is_init():
             return
 
+        if not ArgumentsCheck.is_sshkey(ssh_key):
+            return
+
+        if not ArgumentsCheck.subscription(subscription):
+            return
+
         Terraform.command("apply")
 
 
@@ -129,20 +135,6 @@ class CliParser:
         """Configure : Azure subscription, ssh public key, user"""
 
         console = Console()
-        error = False
-
-        if not ArgumentsCheck.is_sshkey(ssh_key):
-            error = True
-
-        if not ArgumentsCheck.subscription(subscription):
-            error = True
-
-        if error:
-            return
-
-
-        
-        
 
 
 
