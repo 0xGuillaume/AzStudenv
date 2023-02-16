@@ -3,7 +3,8 @@ import re
 import string
 import os
 from pathlib import Path
-from common.files import Yaml, Console
+from files import Yaml, Console
+#from common.files import Yaml, Console
 from typing import Union
 import typer
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -242,6 +243,83 @@ class ArgumentsCheck:
         
         return True
 
-                
 
+
+class Config:
+
+    def __init__(self, image:str, username:str, subscription:str, sshkey:str) -> None:
+        """"""
+
+        self.image = image
+        self.username = username
+        self.subscription = subscription
+        self.sshkey = sshkey
+
+        self._username()
+        self._subscription()
+        self._sshkey()
+        self._image()
+
+    def _model(self) -> dict:
+        """Original configuration"""
+
+        model = {
+            'azure': {
+                'idrsa': None, 
+                'instances': None, 
+                'location': 'FranceCentral', 
+                'poc': None, 
+                'subscription': None, 
+                'suffix': None, 
+                'vm': {
+                    'size': 'Standard_B1s',
+                    'admin_username': None, 
+                    'images': {}
+                }
+            }
+        }
+
+        return model
+
+
+    def _image(self) -> dict:
+        """Return chosen image"""
+
+
+        images = {
+            'debian': {'offer': 'debian-11', 'publisher': 'debian', 'sku': '11', 'version': 'latest'}, 
+            'rhel': {'offer': 'RHEL', 'publisher': 'RedHat', 'sku': '86-gen2', 'version': 'latest'}, 
+            'ubuntu': {'offer': '0001-com-ubuntu-server-focal', 'publisher': 'canonical', 'sku': '20_04-lts-gen2', 'version': 'latest'}
+        }
+
+        print(images[self.image])
+        return images[self.image]
+
+
+    def _username(self) -> None:
+        """Define Azure VM admin username"""
+
+        print(self.username)
+
+                        
+    def _subscription(self) -> None:
+        """Fill Azure subscription"""
+
+        print(self.subscription)
+
+
+    def _sshkey(self) -> None:
+        """Fill SSH public key"""
+
+        print(self.sshkey)
+        
+        
+
+
+
+if __name__ == "__main__":
+    #c = Yaml.read("/home/jimbo/projects/AzStudenv/azstudenv/terraform/config.yaml")
+    #print(c)
+
+    Config("rhel", "jimbo", "10-10-10-10", "path/to/key")
 
