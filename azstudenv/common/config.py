@@ -224,6 +224,20 @@ class Config(ConfigTest):
 
         Yaml.write("/home/guillaume/projects/AzStudenv/azstudenv/terraform/config.yaml", config)
 
+
+class ConfigInfra:
+    """"""
+
+    def __init__(self, amount, image, pocname) -> None:
+        """Inits ConfigInfra class."""
+
+        self.amount     = amount
+        self.image      = image
+        self.pocname    = pocname
+
+
+
+
 if __name__ == "__main__":
 
     c = Config(
