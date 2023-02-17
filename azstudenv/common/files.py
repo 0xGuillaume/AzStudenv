@@ -69,10 +69,10 @@ class Console:
 
 
     @classmethod
-    def error(cls, file:str, message:str) -> None:
+    def error(cls, message:str) -> None:
         """Display an error message."""
 
-        output = f"[red][ERROR] - {file} - {message}"
+        output = f"[red][ERROR] - {message}"
 
         return console.log(output)
 
