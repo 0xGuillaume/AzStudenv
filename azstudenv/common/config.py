@@ -4,7 +4,8 @@ import rich
 import string
 from pathlib import Path
 from typing import Union
-from files import Yaml, Console
+#from files import Yaml, Console
+from common.files import Yaml, Console
 
 
 CONFIG_FILE = "/home/jimbo/projects/AzStudenv/azstudenv/terraform/config.yaml"
@@ -16,8 +17,6 @@ class ConfigTest:
 
     def __init__(self) -> None:
         """"""
-
-
 
 
     def is_username(self, username:str) -> bool:
@@ -151,13 +150,13 @@ class Config(ConfigTest):
         #Yaml.write(CONFIG_FILE)
 
 
-    def fill_config_user(self, sshkey:str, subscription:str, username:str) -> None:
+    def fill_config_user(self, subscription:str, sshkey:str, username:str) -> None:
         """Fill the infrastructure configuration in config.yaml."""
 
         config = self._model()
-        config["azure"]["idrsa"] = self.sshkey
-        config["azure"]["subscription"] = self.subscription
-        config["azure"]["vm"]["admin_username"] = self.username
+        config["azure"]["idrsa"] = sshkey
+        config["azure"]["subscription"] = subscription
+        config["azure"]["vm"]["admin_username"] = username
 
         Yaml.write(CONFIG_FILE, config)
 
@@ -250,9 +249,9 @@ class ConfigUser(Config):
                 self.init()
 
             self.fill_config_user(
-                self.sshkey, 
-                self.subscription, 
-                self.username
+                _subscription, #self.sshkey, 
+                _sshkey, #self.subscription, 
+                _username#self.username
             )
 
             Console.info("User configuration successfully filled.")
@@ -281,8 +280,11 @@ class ConfigUser(Config):
 
         if not self.is_sshkey(self.sshkey):
             return False
+
+        print(self.sshkey)
+        print(type(self.sshkey))
         
-        return self.sshkey
+        return str(self.sshkey)
 
 
 
@@ -291,7 +293,7 @@ class ConfigUser(Config):
 
 if __name__ == "__main__":
 
-    c = ConfigUser(
+    ConfigUser(
         "00000000-1234-0000-0000-000000000000", 
         "/home/guillaume/.ssh/id_rsa.pub",
         "jimbo"
