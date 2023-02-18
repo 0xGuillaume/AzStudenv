@@ -8,6 +8,7 @@ from rich.console import Console
 from common.tf import Terraform
 from common.parser import ConfigCompliant, ArgumentsCheck, ConfigSetup
 from common.files import Yaml, Json
+from common.config import ConfigUser
 
 
 DEBIAN = "debian"
@@ -134,7 +135,13 @@ class CliParser:
     ) -> None:
         """Configure : Azure subscription, ssh public key, user"""
 
-        console = Console()
+        ConfigUser(
+            subscription,
+            ssh_key,
+            user
+        )
+
+        #console = Console()
 
 
 
