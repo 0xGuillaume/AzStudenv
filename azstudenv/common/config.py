@@ -7,12 +7,17 @@ from typing import Union
 from files import Yaml, Console
 
 
+CONFIG_FILE = "/home/jimbo/projects/AzStudenv/azstudenv/terraform/config.yaml"
+
+
 class ConfigTest:
     """
     """
 
     def __init__(self) -> None:
         """"""
+
+
 
 
     def is_username(self, username:str) -> bool:
@@ -85,24 +90,12 @@ class ConfigTest:
         return True
 
 
-
 class Config(ConfigTest):
     """
     """
 
-    def __init__(self, amount:str, image:str, username:str, subscription:str, sshkey:str, pocname:str) -> None:
+    def __init__(self) -> None:
         """"""
-
-        self.amount         = amount
-        self.image          = image
-        self.username       = username
-        self.subscription   = subscription
-        self.sshkey         = sshkey
-        self.pocname        = pocname
-
-        if self.is_compliant():
-            self.fill()
-
 
     def _model(self) -> dict:
         """Original configuration"""
@@ -126,6 +119,55 @@ class Config(ConfigTest):
         return model
 
 
+    def fill(self) -> None:
+        """Fill config if it is compliant."""
+
+        config = self._model()
+
+        config["azure"]["idrsa"] = self.sshkey
+        config["azure"]["instances"] = self._instances()
+        config["azure"]["poc"] = self.pocname
+        config["azure"]["subscription"] = self.subscription
+        config["azure"]["suffix"] = self._suffix()
+        config["azure"]["vm"]["image"] = self._image()
+        config["azure"]["vm"]["admin_username"] = self.username
+
+
+
+    def init(self) -> None:
+        """Init configuration file with default model."""
+
+    def reset(self) -> None:
+        """Reset configuration file with default model."""
+    
+
+    def fill_config_infra(self) -> None:
+        """Fill the user configuration in config.yaml."""
+
+        Yaml.write(CONFIG_FILE)
+
+
+    def fill_config_user(self) -> None:
+        """Fill the infrastructure configuration in config.yaml."""
+
+
+
+class ConfigInfra(ConfigTest):
+    """"""
+
+    def __init__(
+        self, 
+        amount:str, 
+        image:str, 
+        pocname:str
+    ) -> None:
+        """Inits ConfigInfra class."""
+
+        self.amount     = amount
+        self.image      = image
+        self.pocname    = pocname
+
+
     def _image(self) -> dict:
         """Return chosen image"""
 
@@ -138,33 +180,6 @@ class Config(ConfigTest):
         return images[self.image]
 
 
-    def _username(self) -> str:
-        """Define Azure VM admin username"""
-
-        if not self.is_username(self.username):
-            return False
-    
-        return self.username
-
-                        
-    def _subscription(self) -> str:
-        """Fill Azure subscription"""
-
-        if not self.is_subscription(self.subscription):
-            return False
-
-        return self.subscription
-
-
-    def _sshkey(self) -> str:
-        """Fill SSH public key"""
-
-        if not self.is_sshkey(self.sshkey):
-            return False
-        
-        return self.sshkey
-
-    
     def _pocname(self) -> str:
         """Define poc name"""
 
@@ -194,58 +209,75 @@ class Config(ConfigTest):
         return instances
 
 
-    def is_compliant(self) -> bool:
-        """"""
 
-        if (
-            not self._pocname()
-            or not self._sshkey()
-            or not self._subscription()
-            or not self._username()
-        ):
+class ConfigUser(ConfigTest):
+    """
+    """
+
+    def __init__(
+        self, 
+        subscription:str, 
+        sshkey:str, 
+        username:str
+    ) -> None:
+        """Inits ConfigUser class."""
+
+        self.subscription   = subscription
+        self.sshkey         = sshkey
+        self.username       = username
+
+        self._username()
+        self._subscription()
+        self._sshkey()
+    
+
+    def _username(self) -> str:
+        """Define Azure VM admin username"""
+
+        if not self.is_username(self.username):
+            return False
+    
+        return self.username
+
+                        
+    def _subscription(self) -> str:
+        """Fill Azure subscription"""
+
+        if not self.is_subscription(self.subscription):
+            return False
+
+        return self.subscription
+
+
+    def _sshkey(self) -> str:
+        """Fill SSH public key"""
+
+        if not self.is_sshkey(self.sshkey):
             return False
         
-        else:
-            return True
+        return self.sshkey
+
+    
 
 
-    def fill(self) -> None:
-        """Fill config if it is compliant."""
-
-        config = self._model()
-
-        config["azure"]["idrsa"] = self.sshkey
-        config["azure"]["instances"] = self._instances()
-        config["azure"]["poc"] = self.pocname
-        config["azure"]["subscription"] = self.subscription
-        config["azure"]["suffix"] = self._suffix()
-        config["azure"]["vm"]["image"] = self._image()
-        config["azure"]["vm"]["admin_username"] = self.username
-
-        Yaml.write("/home/guillaume/projects/AzStudenv/azstudenv/terraform/config.yaml", config)
 
 
-class ConfigInfra:
-    """"""
-
-    def __init__(self, amount, image, pocname) -> None:
-        """Inits ConfigInfra class."""
-
-        self.amount     = amount
-        self.image      = image
-        self.pocname    = pocname
 
 
 
 
 if __name__ == "__main__":
 
-    c = Config(
-        "2",
-        "rhel", 
-        "jimbo", 
-        "00000000-1234-0000-0000-000000000000", 
-        "/home/guillaume/.ssh/id_rsa.pub", 
-        "ansible"
+    c = ConfigUser(
+        "00000000-1234-0000-0000-00000000000", 
+        "/home/guillaume/.ssh/id_rsa.pub",
+        "admin"
     )
 
+    """
+    i = ConfigInfra(
+        "2",
+        "rhel", 
+        "ansible"
+    )
+    """
