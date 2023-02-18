@@ -124,6 +124,7 @@ class Config(ConfigTest):
 
         config = self._model()
 
+        """
         config["azure"]["idrsa"] = self.sshkey
         config["azure"]["instances"] = self._instances()
         config["azure"]["poc"] = self.pocname
@@ -131,11 +132,14 @@ class Config(ConfigTest):
         config["azure"]["suffix"] = self._suffix()
         config["azure"]["vm"]["image"] = self._image()
         config["azure"]["vm"]["admin_username"] = self.username
-
+        """
 
 
     def init(self) -> None:
         """Init configuration file with default model."""
+
+        Yaml.write(CONFIG_FILE, self._model())
+
 
     def reset(self) -> None:
         """Reset configuration file with default model."""
@@ -144,15 +148,22 @@ class Config(ConfigTest):
     def fill_config_infra(self) -> None:
         """Fill the user configuration in config.yaml."""
 
-        Yaml.write(CONFIG_FILE)
+        #Yaml.write(CONFIG_FILE)
 
 
-    def fill_config_user(self) -> None:
+    def fill_config_user(self, sshkey:str, subscription:str, username:str) -> None:
         """Fill the infrastructure configuration in config.yaml."""
 
+        config = self._model()
+        config["azure"]["idrsa"] = self.sshkey
+        config["azure"]["subscription"] = self.subscription
+        config["azure"]["vm"]["admin_username"] = self.username
+
+        Yaml.write(CONFIG_FILE, config)
 
 
-class ConfigInfra(ConfigTest):
+
+class ConfigInfra(Config):
     """"""
 
     def __init__(
@@ -210,7 +221,7 @@ class ConfigInfra(ConfigTest):
 
 
 
-class ConfigUser(ConfigTest):
+class ConfigUser(Config):
     """
     """
 
@@ -226,10 +237,26 @@ class ConfigUser(ConfigTest):
         self.sshkey         = sshkey
         self.username       = username
 
-        self._username()
-        self._subscription()
-        self._sshkey()
-    
+        _subscription   = self._subscription() 
+        _sshkey         = self._sshkey()
+        _username       = self._username()
+
+        if (
+            _username 
+            and _sshkey
+            and _subscription
+        ):
+            if not Yaml.read(CONFIG_FILE):
+                self.init()
+
+            self.fill_config_user(
+                self.sshkey, 
+                self.subscription, 
+                self.username
+            )
+
+            Console.info("User configuration successfully filled.")
+
 
     def _username(self) -> str:
         """Define Azure VM admin username"""
@@ -257,10 +284,6 @@ class ConfigUser(ConfigTest):
         
         return self.sshkey
 
-    
-
-
-
 
 
 
@@ -269,9 +292,9 @@ class ConfigUser(ConfigTest):
 if __name__ == "__main__":
 
     c = ConfigUser(
-        "00000000-1234-0000-0000-00000000000", 
+        "00000000-1234-0000-0000-000000000000", 
         "/home/guillaume/.ssh/id_rsa.pub",
-        "admin"
+        "jimbo"
     )
 
     """
@@ -281,3 +304,9 @@ if __name__ == "__main__":
         "ansible"
     )
     """
+
+    #r = Config()
+    #r.init()
+
+    #a = Yaml.read(CONFIG_FILE)
+    #print(a)
