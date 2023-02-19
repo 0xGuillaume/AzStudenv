@@ -118,22 +118,6 @@ class Config(ConfigTest):
         return model
 
 
-    def fill(self) -> None:
-        """Fill config if it is compliant."""
-
-        config = self._model()
-
-        """
-        config["azure"]["idrsa"] = self.sshkey
-        config["azure"]["instances"] = self._instances()
-        config["azure"]["poc"] = self.pocname
-        config["azure"]["subscription"] = self.subscription
-        config["azure"]["suffix"] = self._suffix()
-        config["azure"]["vm"]["image"] = self._image()
-        config["azure"]["vm"]["admin_username"] = self.username
-        """
-
-
     def init(self) -> None:
         """Init configuration file with default model."""
 
@@ -144,10 +128,17 @@ class Config(ConfigTest):
         """Reset configuration file with default model."""
     
 
-    def fill_config_infra(self) -> None:
+    def fill_config_infra(self, instances:dict, image:str, pocname:str, suffix:str) -> None:
         """Fill the user configuration in config.yaml."""
 
-        #Yaml.write(CONFIG_FILE)
+        config = Yaml.read(CONFIG_FILE)
+
+        config["azure"]["poc"] = pocname
+        config["azure"]["suffix"] = suffix
+        config["azure"]["instances"] = instances
+        config["azure"]["vm"]["image"] = image
+
+        Yaml.write(CONFIG_FILE, config)
 
 
     def fill_config_user(self, subscription:str, sshkey:str, username:str) -> None:
@@ -177,6 +168,19 @@ class ConfigInfra(Config):
         self.image      = image
         self.pocname    = pocname
 
+        # Check if config has already been settuped by ConfigUser
+        #if not Yaml.read(CONFIG_FILE):
+        #    self.init()
+
+        self.fill_config_infra(
+            self._instances(),
+            self._image(),
+            self._pocname(),
+            self._suffix()
+        )
+
+        Console.info("Infrastructure configuration successfully setup.")
+
 
     def _image(self) -> dict:
         """Return chosen image"""
@@ -196,7 +200,7 @@ class ConfigInfra(Config):
         if not self.is_pocname(self.pocname):
             return False
 
-        return self.pocname
+        return f"POC_{self.pocname}"
         
 
     def _suffix(self) -> str:
@@ -214,7 +218,7 @@ class ConfigInfra(Config):
         for vm in range(0, vms):
             image = self.image[:3].upper()
             instance = f"AZUX{image}0{vm + 1}"
-            instances[instance] = self.image
+            instances[instance] = self.image.value
 
         return instances
 
@@ -249,9 +253,9 @@ class ConfigUser(Config):
                 self.init()
 
             self.fill_config_user(
-                _subscription, #self.sshkey, 
-                _sshkey, #self.subscription, 
-                _username#self.username
+                _subscription,
+                _sshkey,
+                _username
             )
 
             Console.info("User configuration successfully filled.")
@@ -281,9 +285,6 @@ class ConfigUser(Config):
         if not self.is_sshkey(self.sshkey):
             return False
 
-        print(self.sshkey)
-        print(type(self.sshkey))
-        
         return str(self.sshkey)
 
 
