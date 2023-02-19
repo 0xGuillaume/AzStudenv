@@ -89,6 +89,9 @@ class ConfigTest:
         return True
 
 
+        
+
+
 class Config(ConfigTest):
     """
     """
@@ -100,22 +103,32 @@ class Config(ConfigTest):
         """Original configuration"""
 
         model = {
-            'azure': {
-                'idrsa': None, 
-                'instances': None, 
-                'location': 'FranceCentral', 
-                'poc': None, 
-                'subscription': None, 
-                'suffix': None, 
-                'vm': {
-                    'size': 'Standard_B1s',
-                    'admin_username': None, 
-                    'image': {}
-                }
+            'idrsa': None, 
+            'instances': None, 
+            'location': 'FranceCentral', 
+            'poc': None, 
+            'subscription': None, 
+            'suffix': None, 
+            'vm': {
+                'size': 'Standard_B1s',
+                'admin_username': None, 
+                'image': {'offer': None, 'publisher': None, 'sku': None, 'version': None}
             }
         }
 
         return model
+
+
+    def _image(self) -> dict:
+        """Return chosen image"""
+
+        images = {
+            'debian': {'offer': 'debian-11', 'publisher': 'debian', 'sku': '11', 'version': 'latest'}, 
+            'rhel': {'offer': 'RHEL', 'publisher': 'RedHat', 'sku': '86-gen2', 'version': 'latest'}, 
+            'ubuntu': {'offer': '0001-com-ubuntu-server-focal', 'publisher': 'canonical', 'sku': '20_04-lts-gen2', 'version': 'latest'}
+        }
+
+        return images
 
 
     def init(self) -> None:
@@ -133,10 +146,10 @@ class Config(ConfigTest):
 
         config = Yaml.read(CONFIG_FILE)
 
-        config["azure"]["poc"] = pocname
-        config["azure"]["suffix"] = suffix
-        config["azure"]["instances"] = instances
-        config["azure"]["vm"]["image"] = image
+        config["poc"] = pocname
+        config["suffix"] = suffix
+        config["instances"] = instances
+        config["vm"]["image"] = image
 
         Yaml.write(CONFIG_FILE, config)
 
@@ -145,12 +158,32 @@ class Config(ConfigTest):
         """Fill the infrastructure configuration in config.yaml."""
 
         config = self._model()
-        config["azure"]["idrsa"] = sshkey
-        config["azure"]["subscription"] = subscription
-        config["azure"]["vm"]["admin_username"] = username
+        config["idrsa"] = sshkey
+        config["subscription"] = subscription
+        config["vm"]["admin_username"] = username
 
         Yaml.write(CONFIG_FILE, config)
 
+    
+    def is_well_formated(self, config:dict) -> bool:
+        """Check if configuration is well formated."""
+        
+        default = self._model()
+
+        main = config.keys() == default().keys()
+        vm = config["vm"].keys() == default["vm"].keys()
+        image = config["vm"]["image"].keys() == default["vm"]["image"].keys()
+        
+        return main == vm == image
+
+
+    def is_compliant(self) -> bool:
+        """Check if configuration is compliant."""
+
+        config = Yaml.read(CONFIG_FILE)
+        fmt = self.is_well_formated(config)
+
+        #image = if config["image"] in self._i        
 
 
 class ConfigInfra(Config):
@@ -174,24 +207,12 @@ class ConfigInfra(Config):
 
         self.fill_config_infra(
             self._instances(),
-            self._image(),
+            self._image()[self.image],
             self._pocname(),
             self._suffix()
         )
 
         Console.info("Infrastructure configuration successfully setup.")
-
-
-    def _image(self) -> dict:
-        """Return chosen image"""
-
-        images = {
-            'debian': {'offer': 'debian-11', 'publisher': 'debian', 'sku': '11', 'version': 'latest'}, 
-            'rhel': {'offer': 'RHEL', 'publisher': 'RedHat', 'sku': '86-gen2', 'version': 'latest'}, 
-            'ubuntu': {'offer': '0001-com-ubuntu-server-focal', 'publisher': 'canonical', 'sku': '20_04-lts-gen2', 'version': 'latest'}
-        }
-
-        return images[self.image]
 
 
     def _pocname(self) -> str:
