@@ -10,8 +10,8 @@ terraform {
 
 # Locals Variable : Load config file
 locals {
-  config = yamldecode(file("./config.yaml"))["azure"]
-  image  = yamldecode(file("./config.yaml"))["azure"]["vm"]["images"]
+  config = yamldecode(file("./config.yaml"))
+  image  = yamldecode(file("./config.yaml"))["vm"]["image"]
 }
 
 
