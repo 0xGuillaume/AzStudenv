@@ -8,7 +8,7 @@ from rich.console import Console
 from common.tf import Terraform
 from common.parser import ConfigCompliant, ArgumentsCheck, ConfigSetup
 from common.files import Yaml, Json
-from common.config import ConfigUser
+from common.config import ConfigUser, ConfigInfra
 
 
 DEBIAN = "debian"
@@ -86,9 +86,15 @@ class CliParser:
         ):
             return
 
-        args = Args(amount.value, image.value, poc)
-        config = ConfigSetup(CONFIG_FILE, CONFIG, args) 
-        config.fill()
+        ConfigInfra(
+            amount, 
+            image, 
+            poc
+        )
+
+        #args = Args(amount.value, image.value, poc)
+        #config = ConfigSetup(CONFIG_FILE, CONFIG, args) 
+        #config.fill()
 
 
     @app.command()
@@ -140,8 +146,6 @@ class CliParser:
             ssh_key,
             user
         )
-
-        #console = Console()
 
 
 
