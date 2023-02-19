@@ -165,15 +165,16 @@ class Config(ConfigTest):
         Yaml.write(CONFIG_FILE, config)
 
     
-    def is_well_formated(self, config:dict) -> bool:
+    def is_well_formated(self) -> bool:
         """Check if configuration is well formated."""
         
         default = self._model()
+        config = Yaml.read(CONFIG_FILE)
 
-        main = config.keys() == default().keys()
+        main = config.keys() == default.keys()
         vm = config["vm"].keys() == default["vm"].keys()
         image = config["vm"]["image"].keys() == default["vm"]["image"].keys()
-        
+
         return main == vm == image
 
 
@@ -212,7 +213,7 @@ class ConfigInfra(Config):
             self._suffix()
         )
 
-        Console.info("Infrastructure configuration successfully setup.")
+        Console.info("[green bold]✓[/green bold] [bold]Infrastructure configuration successfully setup![/bold]")
 
 
     def _pocname(self) -> str:
@@ -221,7 +222,7 @@ class ConfigInfra(Config):
         if not self.is_pocname(self.pocname):
             return False
 
-        return f"POC_{self.pocname}"
+        return f"POC_{self.pocname.capitalize()}"
         
 
     def _suffix(self) -> str:
@@ -279,7 +280,7 @@ class ConfigUser(Config):
                 _username
             )
 
-            Console.info("User configuration successfully filled.")
+            Console.info("[green bold]✓[/green bold] [bold]User configuration successfully filled![/bold]")
 
 
     def _username(self) -> str:
