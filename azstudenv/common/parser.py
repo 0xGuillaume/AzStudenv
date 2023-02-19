@@ -3,8 +3,8 @@ import re
 import string
 import os
 from pathlib import Path
-from files import Yaml, Console
-#from common.files import Yaml, Console
+#from files import Yaml, Console
+from common.files import Yaml, Console
 from typing import Union
 import typer
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -37,8 +37,8 @@ class ConfigCompliant:
     def __bool__(self) -> bool:
         """Checks all three tests"""
 
-        subscription = self.subscription_is_valid(self.config["azure"]["subscription"])
-        rsa = self.id_rsa_is_valid(self.config["azure"]["idrsa"])
+        subscription = self.subscription_is_valid(self.config["subscription"])
+        rsa = self.id_rsa_is_valid(self.config["idrsa"])
         admin_username = self.admin_username_is_valid()
 
         return subscription and rsa and admin_username
@@ -85,7 +85,7 @@ class ConfigCompliant:
     def admin_username_is_valid(self) -> bool:
         """Check if the given admin username is azure compliant."""
 
-        username = self.config["azure"]["vm"]["admin_username"]
+        username = self.config["vm"]["admin_username"]
 
         authorized_chars = string.ascii_lowercase
         authorized_chars += string.ascii_uppercase
@@ -122,7 +122,7 @@ class ConfigCompliant:
     def is_infra(self) -> bool:
         """Check wether or not infrastructure has been set up."""
 
-        if not self.config["azure"]["instances"]:
+        if not self.config["instances"]:
             message = ("No infrastrucure has been setup."
                 "Try to run [cyan bold]`infra`[/cyan bold] command.")
             Console.error(self.config_filename, message)
@@ -150,9 +150,9 @@ class ConfigSetup:
         """Clear specific YAML config keys before dumping new data in."""
 
         conf = self.conf
-        conf["azure"]["poc"] = ""
-        conf["azure"]["suffix"] = ""
-        conf["azure"]["instances"] = []
+        conf["poc"] = ""
+        conf["suffix"] = ""
+        conf["instances"] = []
         self.conf = conf
 
         Yaml.write(self.config_filename, self.conf)
@@ -187,9 +187,9 @@ class ConfigSetup:
     def fill(self):
         """File YAML config file with new arguments parameters."""
 
-        self.conf["azure"]["poc"] = self.poc_name()
-        self.conf["azure"]["suffix"] = self.suffix()
-        self.conf["azure"]["instances"] = self.hostnames()
+        self.conf["poc"] = self.poc_name()
+        self.conf["suffix"] = self.suffix()
+        self.conf["instances"] = self.hostnames()
 
         Yaml.write(self.config_filename, self.conf)
 
