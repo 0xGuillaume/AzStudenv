@@ -8,7 +8,7 @@ from rich.console import Console
 from common.tf import Terraform
 from common.parser import ConfigCompliant, ArgumentsCheck, ConfigSetup
 from common.files import Yaml, Json
-from common.config import ConfigUser, ConfigInfra
+from common.config import ConfigUser, ConfigInfra, Config
 
 
 DEBIAN = "debian"
@@ -105,6 +105,7 @@ class CliParser:
         Terraform command used : terraform apply --auto-approve
         """
 
+        """
         config = ConfigCompliant(CONFIG)
 
         if not config.is_infra():
@@ -118,8 +119,11 @@ class CliParser:
 
         if not ArgumentsCheck.subscription(subscription):
             return
+        """
 
-        Terraform.command("apply")
+        config = Config()
+        if config.is_well_formated():
+            Terraform.command("apply")
 
 
     @app.command()
