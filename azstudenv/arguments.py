@@ -80,21 +80,11 @@ class CliParser:
         Configure Azure infrastructure : POC, Vms (amount), Images (ISO).
         """
 
-        if (
-            not ArgumentsCheck.poc_name(poc)
-            or not bool(ConfigCompliant(CONFIG))
-        ):
-            return
-
         ConfigInfra(
             amount, 
             image, 
             poc
         )
-
-        #args = Args(amount.value, image.value, poc)
-        #config = ConfigSetup(CONFIG_FILE, CONFIG, args) 
-        #config.fill()
 
 
     @app.command()
@@ -105,23 +95,11 @@ class CliParser:
         Terraform command used : terraform apply --auto-approve
         """
 
-        """
-        config = ConfigCompliant(CONFIG)
-
-        if not config.is_infra():
-            return
-
-        if not Terraform.is_init():
-            return
-
-        if not ArgumentsCheck.is_sshkey(ssh_key):
-            return
-
-        if not ArgumentsCheck.subscription(subscription):
-            return
-        """
-
         config = Config()
+
+        if not config.is_init():
+            return
+
         if config.is_well_formated():
             Terraform.command("apply")
 
@@ -133,6 +111,11 @@ class CliParser:
 
         Terraform command used : terraform destroy --auto-approve
         """
+
+        config = Config()
+
+        if not config.is_init():
+            return
 
         Terraform.command("destroy")
 
