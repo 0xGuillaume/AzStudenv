@@ -89,8 +89,6 @@ class ConfigTest:
         return True
 
 
-        
-
 
 class Config(ConfigTest):
     """
@@ -99,10 +97,10 @@ class Config(ConfigTest):
     def __init__(self) -> None:
         """"""
 
-    def _model(self) -> dict:
+    def _default(self) -> dict:
         """Original configuration"""
 
-        model = {
+        default = {
             'idrsa': None, 
             'instances': None, 
             'location': 'FranceCentral', 
@@ -116,7 +114,7 @@ class Config(ConfigTest):
             }
         }
 
-        return model
+        return default
 
 
     def _image(self) -> dict:
@@ -134,7 +132,7 @@ class Config(ConfigTest):
     def init(self) -> None:
         """Init configuration file with default model."""
 
-        Yaml.write(CONFIG_FILE, self._model())
+        Yaml.write(CONFIG_FILE, self._default())
 
 
     def reset(self) -> None:
@@ -157,7 +155,7 @@ class Config(ConfigTest):
     def fill_config_user(self, subscription:str, sshkey:str, username:str) -> None:
         """Fill the infrastructure configuration in config.yaml."""
 
-        config = self._model()
+        config = self._default()
         config["idrsa"] = sshkey
         config["subscription"] = subscription
         config["vm"]["admin_username"] = username
@@ -168,7 +166,7 @@ class Config(ConfigTest):
     def is_well_formated(self) -> bool:
         """Check if configuration is well formated."""
         
-        default = self._model()
+        default = self._default()
         config = Yaml.read(CONFIG_FILE)
 
         main = config.keys() == default.keys()
