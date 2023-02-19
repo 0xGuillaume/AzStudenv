@@ -55,10 +55,10 @@ resource "azurerm_linux_virtual_machine" "main" {
   disable_password_authentication = true
 
   source_image_reference {
-    publisher = local.image[each.value]["publisher"]
-    offer     = local.image[each.value]["offer"]
-    sku       = local.image[each.value]["sku"]
-    version   = local.image[each.value]["version"]
+    publisher = local.image["publisher"]
+    offer     = local.image["offer"]
+    sku       = local.image["sku"]
+    version   = local.image["version"]
   }
 
   admin_ssh_key {
