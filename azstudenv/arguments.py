@@ -1,138 +1,122 @@
-"""."""
-import os
-import typer
+"""Module handling program arguments."""
 from enum import Enum
-from typing import Tuple, Optional
+from typing import Optional
 from pathlib import Path
-from rich.console import Console
+import typer
 from common.tf import Terraform
-from common.parser import ConfigCompliant, ArgumentsCheck, ConfigSetup
-from common.files import Yaml, Json
 from common.config import ConfigUser, ConfigInfra, Config
-
-
-DEBIAN = "debian"
-RHEL = "rhel"
-UBUNTU = "ubuntu"
-
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
-CONFIG_FILE = "terraform/config.yaml"
-CONFIG = Yaml.read(CONFIG_FILE)
-
-
-class VmImages(str, Enum):
-    """
-    """
-
-    debian  = DEBIAN
-    rhel    = RHEL
-    ubuntu  = UBUNTU
-
-
-class VmAmount(str, Enum):
-    """
-    """
-    
-    one = 1
-    two = 2
-    three = 3
-
-
-def complete_images() -> list:
-    """Return list of availanle images"""
-
-    return [DEBIAN, RHEL, UBUNTU]
-
-
-
-# ==================================================
 
 
 app = typer.Typer()
 
 
-class Args:
+class VmImages(str, Enum):
+    """Set of choice for `--image` argument."""
+
+    DEBIAN  = "debian"
+    RHEL    = "rhel"
+    UBUNTU  = "ubuntu"
+
+
+
+class VmAmount(str, Enum):
+    """Set of choice for `--amount` argument."""
+
+    ONE     = 1
+    TWO     = 2
+    THREE   = 3
+
+
+
+@app.command()
+def infra(
+    amount:VmAmount = typer.Argument(
+        VmAmount,
+        help="Amount of virtual machines to create.",
+        show_default=False
+    ),
+    image:VmImages = typer.Argument(
+        VmImages,
+        help="Which image to create",
+        show_default=False,
+    ),
+    poc:str = typer.Argument(
+        ..., help="The name of POC.", show_default=False
+    )
+) -> None:
+    """Configure Azure infrastructure : POC, Vms (amount), Images (ISO).
+    
+    Args:
+        amount: String value between: 1, 2 or 3.
+        image: String vlaue between: debian, rhel or ubuntu.
+        poc: Given POC name.
     """
+
+    ConfigInfra(
+        amount,
+        image,
+        poc
+    )
+
+
+@app.command()
+def build() -> None:
+    """
+    Build Azure infrastructure using Terraform.
+
+    Terraform command used : terraform apply --auto-approve
     """
 
-    def __init__(self, amount:str, image:str, poc:str):
-        self.amount = amount
-        self.image  = image
-        self.poc    = poc
+    config = Config()
+
+    if not config.is_init():
+        return
+
+    if config.is_well_formated():
+        Terraform.command("apply")
 
 
-class CliParser:
+@app.command()
+def destroy() -> None:
     """
+    Destroy Azure infrastructure using Terraform.
+
+    Terraform command used : terraform destroy --auto-approve
     """
 
+    config = Config()
 
-    def __init__(self, app) -> None:
-        """Init CliParser class."""
+    if not config.is_init():
+        return
 
-
-    @app.command()
-    def infra(
-        amount:VmAmount = typer.Argument(VmAmount, help="Amount of virtual machines to create.", show_default=False),
-        image:VmImages = typer.Argument(VmImages, help="Which image to create", show_default=False, autocompletion=complete_images),
-        poc:str = typer.Argument(..., help="The name of POC.", show_default=False)
-    ) -> None:
-        """
-        Configure Azure infrastructure : POC, Vms (amount), Images (ISO).
-        """
-
-        ConfigInfra(
-            amount, 
-            image, 
-            poc
-        )
+    Terraform.command("destroy")
 
 
-    @app.command()
-    def build() -> None:
-        """
-        Build Azure infrastructure using Terraform.
+@app.command()
+def config(
+    subscription: str = typer.Option(
+        ..., prompt="Enter your Azure subscription ID", hide_input=True
+    ),
+    ssh_key: Optional[Path] = typer.Option(
+        ..., prompt="Enter the path of your id_rsa.pub key"
+    ),
+    user: str = typer.Option(
+        ..., prompt="Enter the username you would like to use"
+    )
+) -> None:
+    """Configure AzStudenv user's settings.
 
-        Terraform command used : terraform apply --auto-approve
-        """
+    Args:
+        subscription: User's Azure subcription.
+        ssh_key: User's SSH public key path.
+        user: Username used to connect to instances.
+    """
 
-        config = Config()
-
-        if not config.is_init():
-            return
-
-        if config.is_well_formated():
-            Terraform.command("apply")
-
-
-    @app.command()
-    def destroy() -> None:
-        """
-        Destroy Azure infrastructure using Terraform.
-
-        Terraform command used : terraform destroy --auto-approve
-        """
-
-        config = Config()
-
-        if not config.is_init():
-            return
-
-        Terraform.command("destroy")
-
-
-    @app.command()
-    def config(
-        subscription: str = typer.Option(..., prompt="Enter your Azure subscription ID", hide_input=True),
-        ssh_key: Optional[Path] = typer.Option(..., prompt="Enter the path of your id_rsa.pub key"),
-        user: str = typer.Option(..., prompt="Enter the username you would like to use"),
-    ) -> None:
-        """Configure : Azure subscription, ssh public key, user"""
-
-        ConfigUser(
-            subscription,
-            ssh_key,
-            user
-        )
+    ConfigUser(
+        subscription,
+        ssh_key,
+        user
+    )
 
 
 
