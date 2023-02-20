@@ -113,7 +113,10 @@ In order to configure your personal settings such as :
 - The name of the user you will use on your Azure Linux environment.
 
 ```bash
-azstudenv config --subscription 00000000-0000-0000-0000-000000000000 --ssh-key /path/to/my/sshkey.pub --user foouser
+azstudenv config \
+	--subscription 00000000-0000-0000-0000-000000000000 \
+	--ssh-key /path/to/my/sshkey.pub \
+	--user foouser
 ```
 
 ### Infrastructure details
