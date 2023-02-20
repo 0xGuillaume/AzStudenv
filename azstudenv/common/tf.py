@@ -1,10 +1,9 @@
 """Module handling Terraform commands."""
 import subprocess
-import typer
 from time import sleep
-from rich.console import Console
 from pathlib import Path
 from typing import Literal
+from rich.console import Console
 
 
 console = Console()
@@ -50,7 +49,7 @@ class Terraform:
         ]
 
         return [action for action in actions if action["option"] == option][0]
-    
+
 
     @classmethod
     def resource_format(cls, output:str, action:str) -> str:
@@ -94,8 +93,8 @@ class Terraform:
         ) as status:
 
             with subprocess.Popen(
-                ["terraform", "-chdir=terraform/", option, "-auto-approve", "-no-color"], 
-                stdout=subprocess.PIPE, 
+                ["terraform", "-chdir=terraform/", option, "-auto-approve", "-no-color"],
+                stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             ) as process:
 
