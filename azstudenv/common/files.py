@@ -61,7 +61,7 @@ class Json:
         return data
 
 
-class Console:
+class Output:
     """Handling console output.
 
     Several methods to custom output console:
@@ -72,7 +72,7 @@ class Console:
 
 
     def __init__(self):
-        """Initialize Console class."""
+        """Initialize Output class."""
 
 
     @classmethod
