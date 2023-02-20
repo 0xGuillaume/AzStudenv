@@ -15,7 +15,7 @@
 
 Azure Student subscription authorized the usage of 3 public IP addresses per region at the same time. This way **AzStudenv** allows you to create up to 3 linux virtual machines. 
 
-There are 3 images available at the moment :
+*AzStudenv* allow the creation of 3 images available :
 
 - Debian 11
 
@@ -104,28 +104,55 @@ $ python3 -m pip install -r requirements.txt
 
 ## Configuration
 
-Update `azstudenv/config.yaml` file with 3 mandatory keys.
+### User settings.
 
-```yaml
-azure:
-  idrsa: path/to/your/id_rsa.pub
-  subscription: your-subscribtion-id
-  ...
-  vm:
-    admin_username: vm_username
+In order to configure your personal settings such as :
+
+- Your Azure subscription.
+- The Path of your SSH public key.
+- The name of the user you will use on your Azure Linux environment.
+
+```bash
+azstudenv config --subscription 00000000-0000-0000-0000-000000000000 --ssh-key /path/to/my/sshkey.pub --user foouser
 ```
 
-By default Azure `location` is configured on `FranceCentral` but you can easily changed by another available Azure region.
+### Infrastructure details
 
-```yaml
-azure:
-  ...
-  location: FranceCentral
+Then you have to setup your desire Azure Linux environment with the following options :
+	
+- Amount of instances you would like to create `[1, 2, 3]`.
+- Linux distribution you would like to work on `["debian", "rhel", "ubuntu"]`.
+- The name of your POC/project.
+
+```bash
+$ azstudenv infra --amount 2 --image debian --poc foopoc
 ```
 
 ## Usage
 
+### Build (Apply)
 
+Once you have setup your configuration you can build your Azure infrastructure.
+
+```bash
+$ azstudenv build
+```
+
+### Destroy
+
+When you finished using your Azure infrastructure feel free to run the following command to destroy your infrastructure and avoid unnecessary costs.
+
+```bash
+$ azstudenv destroy
+```
+
+### Help
+
+At any time feel free to consult the help to get more details on commands behavior.
+
+```bash
+$ azstudenv --help
+```
 
 ## Run from everywhere
 
