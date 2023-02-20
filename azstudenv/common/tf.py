@@ -1,4 +1,4 @@
-"""."""
+"""Module handling Terraform commands."""
 import subprocess
 import typer
 from time import sleep
@@ -11,18 +11,28 @@ console = Console()
 
 
 class Terraform:
-    """
-    .
+    """Terraform commands and options.
+
+    Formatting Terraform console output
+    and methods handling Terraform commands
+    `apply` and `destroy`.
+
+    Also running tests on Terraform environment
+    such as : Has been TF initialize.
     """
 
 
     def __init__(self) -> None:
-        """Inits Terraform class."""
+        """Initialize Terraform class."""
 
 
     @classmethod
     def _actions(cls, option:str) -> dict:
-        """"""
+        """Actions paramaters for Terraform commands.
+        
+        Args:
+            option: Terraform command `apply` or `destroy`.
+        """
 
         actions = [
             {
@@ -44,7 +54,12 @@ class Terraform:
 
     @classmethod
     def resource_format(cls, output:str, action:str) -> str:
-        """"""
+        """Formatting Terraform output into readable text.
+
+        Args:
+            output: Terraform default console output.
+            action: `apply` or `destroy` paramaters.
+        """
 
         output = output.split(":")[0].split(".")
         resource, id_ = output[0], output[1]
@@ -63,7 +78,11 @@ class Terraform:
 
     @classmethod
     def command(self, option: Literal["apply", "destroy"]) -> None:
-        """
+        """Running Terraform command in a subprocess
+        and capture the output which is going to be formatted.
+
+        Args:
+            option: `apply` or `destroy` paramaters.
         """
 
         amount = 0
@@ -89,9 +108,11 @@ class Terraform:
                         console.log(message)
                         amount += 1
 
-        console.print(
-            f"[bold green]Infrastructure successfully {action['result']}! {amount} resources {action['state']}."
+        message = (
+            f"[bold green]Infrastructure successfully {action['result']}! "
+            "{amount} resources {action['state']}."
         )
+        console.print(message)
 
 
     @classmethod
@@ -102,27 +123,19 @@ class Terraform:
         tf_lock = Path("terraform/.terraform.lock.hcl").is_file()
 
         if not tf_dir:
-            message = ("[cyan italic].terraform/[/cyan italic] directory not found. You probably did not run "
-                "`terraform init` to initiaize the Terraform working directory")
+            message = (
+                "[cyan italic].terraform/[/cyan italic] directory not found. "
+                "You probably did not run `terraform init` "
+                "to initiaize the Terraform working directory."
+            )
             console.log(f"[red bold]ERROR: {message}")
 
         if not tf_lock:
-            message = ("[cyan italic].terraform.lock.hcl[/cyan italic] file not found. You probably did not run "
-                "`terraform init` to initiaize the Terraform working directory")
+            message = (
+                "[cyan italic].terraform.lock.hcl[/cyan italic] file not found. "
+                "You probably did not run `terraform init` "
+                "to initiaize the Terraform working directory."
+            )
             console.log(f"[red bold]ERROR: {message}")
 
         return tf_dir and tf_lock
-
-
-    @classmethod
-    def has_been_destroyed(cls, tfstate:str) -> bool:
-        """Check wether or not previous terraform build has been destroyed"""
-
-        ressources = tfstate["resources"]
-
-        if ressources:
-            message = "Tfstate file not empty. Make sure you destroyed your previous build."
-            console.log(f"[yellow]Warning - {message}")
-            return False
-
-        return True
