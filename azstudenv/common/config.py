@@ -4,7 +4,7 @@ import os
 import string
 from pathlib import Path
 from typing import Union
-from common.files import Yaml, Console
+from common.files import Yaml, Output
 
 
 CONFIG_FILE = "/home/guillaume/projects/AzStudenv/azstudenv/terraform/config.yaml"
@@ -47,7 +47,7 @@ class ConfigTest:
                 "Admin username value must be between 1 and 64 characters"
                 f"long [Length: {len(username)}]."
             )
-            Console.error(message)
+            Output.error(message)
             return False
 
         if username in banned_username:
@@ -55,7 +55,7 @@ class ConfigTest:
                 f"Given admin username : [cyan bold]{username}[/cyan bold] "
                 "is a banned value by Azure."
             )
-            Console.error(message)
+            Output.error(message)
             return False
 
         for char in username:
@@ -65,7 +65,7 @@ class ConfigTest:
                     "[Position: {count + 1}]"
                     "is not an authorized character for admin_username."
                 )
-                Console.error(message)
+                Output.error(message)
                 return False
         return True
 
@@ -82,7 +82,7 @@ class ConfigTest:
                 f"[cyan bold]{name}[/cyan bold] is not a valid name. "
                 "Only letters are allowed for naming POC."
             )
-            Console.error(message)
+            Output.error(message)
 
         return name.isalpha()
 
@@ -101,7 +101,7 @@ class ConfigTest:
                 f"Given Azure subscription [cyan bold]{id_}[/cyan bold] "
                 "does not respect Azure subscription pattern."
             )
-            Console.error(message)
+            Output.error(message)
             return False
 
         return True
@@ -116,7 +116,7 @@ class ConfigTest:
 
         if not Path(path).exists():
             message = f"SSH Public key [cyan bold]{path}[/cyan bold] does not exist."
-            Console.error(message)
+            Output.error(message)
             return False
 
         return True
@@ -133,7 +133,7 @@ class ConfigTest:
                 "Run [cyan bold]config[/cyan bold] command in order to initate "
                 "configuration file."
             )
-            Console.error(message)
+            Output.error(message)
             return False
 
         return True
@@ -326,7 +326,7 @@ class ConfigInfra(Config):
             "[green bold]✓[/green bold] [bold]"
             "Infrastructure configuration successfully setup![/bold]"
         )
-        Console.info(message)
+        Output.info(message)
 
 
     def _pocname(self) -> str:
@@ -414,7 +414,7 @@ class ConfigUser(Config):
                 "[green bold]✓[/green bold] [bold]"
                 "User configuration successfully filled![/bold]"
             )
-            Console.info(message)
+            Output.info(message)
 
 
     def _username(self) -> str:
