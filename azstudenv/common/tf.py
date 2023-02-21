@@ -109,7 +109,7 @@ class Terraform:
 
         message = (
             f"[bold green]Infrastructure successfully {action['result']}! "
-            "{amount} resources {action['state']}."
+            f"{amount} resources {action['state']}."
         )
         console.print(message)
 
