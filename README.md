@@ -190,5 +190,7 @@ Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
 
 ## Python dependencies
 
-
--  [`test`](http)
+- [`pylint`](https://pypi.org/project/pylint/) : Static code analyser.
+- [`PyYAML`](https://pypi.org/project/PyYAML/) : Yaml parser.
+- [`rich`](https://pypi.org/project/rich/) : Pretty text formatting in the terminal.
+- [`typer`](https://pypi.org/project/typer/) : Create CLI application.
