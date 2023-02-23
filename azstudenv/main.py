@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Module handling program arguments."""
 from enum import Enum
 from typing import Optional
