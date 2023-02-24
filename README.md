@@ -7,9 +7,9 @@
 
 # AzStudenv
 
-**AzStudenv** (Azure Student Environement) is primarly designed for Azure Student subscription but can be used with any other Azure subscriptions. This tool has been designed for test and development purpose for myself and fellows students.
+**AzStudenv** (_Azure Studenv Environment_) is a tool that create an **IaaS** Azure Linux environment for tests and development purpose. This tool has mainly been designed for Azure Student subscriptions but works with a standard subscription too. 
 
-
+AzStudenv can create up to **3 virtual machines** (This limit is set according to Azure Student restricictions over public IP address usage at the same time).
 
 **Attention**, you will be charged creating and using Azure services.
 
