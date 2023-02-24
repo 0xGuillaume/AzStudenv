@@ -9,21 +9,17 @@
 
 **AzStudenv** (_Azure Studenv Environment_) is a tool that create an **IaaS** Azure Linux environment for tests and development purpose. This tool has mainly been designed for Azure Student subscriptions but works with a standard subscription too. 
 
-You can create up to **3 virtual machines** (This limit is set according to Azure Student restricictions over public IP address usage at the same time).
-
-**Attention**, you will be charged creating and using Azure services.
-
----
-
-Azure Student subscription authorized the usage of 3 public IP addresses per region at the same time. This way **AzStudenv** allows you to create up to 3 linux virtual machines. 
-
-*AzStudenv* allow the creation of 3 images available :
+You can create up to **3 virtual machines** the **same** image whatever virtual machines amount needed :
 
 - Debian 11
 
 - Ubuntu 20.04
 
 - Red Hat Linux Entreprise 8
+
+---
+
+**Attention**, you will be charged creating and using Azure services.
 
 
 
