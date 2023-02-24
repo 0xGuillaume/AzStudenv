@@ -7,7 +7,9 @@
 
 # AzStudenv
 
-**AzStudenv** (Azure Student Environement) is primarly designed for Azure Student subscription but can be used with any other Azure subscriptions.
+**AzStudenv** (Azure Student Environement) is primarly designed for Azure Student subscription but can be used with any other Azure subscriptions. This tool has been designed for test and development purpose for myself and fellows students.
+
+
 
 **Attention**, you will be charged creating and using Azure services.
 
@@ -49,7 +51,7 @@ Azure Student subscription authorized the usage of 3 public IP addresses per reg
     ```
 
 
-## 🔐 Authenticate with Azure CLI
+## Authenticate with Azure CLI
 
 Once all prerequisites are satisfied you must authenticate to your **Azure Subscription** in order to let Terraform create infrastructure.
 
@@ -83,7 +85,7 @@ You have logged in. Now let us find all the subscriptions to which you have acce
 You **will need** the `id` key corresponding to your Azure Subscription in order to setup **AzStudenv** `yaml` configuration file.
 
 
-## 📥 Installation
+## Installation
 
 Clone **AzStudenv** git repositoriy locally.
 
@@ -102,7 +104,7 @@ $ python3 -m pip install -r requirements.txt
 ```
 
 
-## ⚙️  Configuration
+## Configuration
 
 ### User settings.
 
@@ -131,7 +133,7 @@ Then you have to setup your desire Azure Linux environment with the following op
 $ azstudenv infra --amount 2 --image debian --poc foopoc
 ```
 
-## 🚀 Usage
+## Usage
 
 ### Build (Apply)
 
@@ -157,9 +159,9 @@ At any time feel free to consult the help to get more details on commands behavi
 $ azstudenv --help
 ```
 
-## Run from everywhere
+## Run from everywhere
 
-If you would like to run **AzStudenv** from anywhere follow steps below :
+If you would like to run **AzStudenv** from anywhere follow steps below (If you would like to do so, install the required libraries on your local machine):
 
 * Make the `azstudenv` file executable.
     ```shell
@@ -171,12 +173,11 @@ If you would like to run **AzStudenv** from anywhere follow steps below :
     $ sudo ln -s ~/pathto/AzStudenv/azstudenv/azstudenv
     ```
 
-* If you would like to do so, install the required libraries on your local machine.
 
-Now you can run **azstudenv** from everywhere in your terminal.
+Now you can run `azstudenv` from everywhere in your terminal.
 
 
-## 🔬 Linting
+## Linting
 
 Code has been written under the [PEP-8](https://peps.python.org/pep-0008/) and [Google](https://google.github.io/styleguide/pyguide.html) style guides.
 
@@ -190,7 +191,7 @@ Your code has been rated at 10.00/10 (previous run: 10.00/10, +0.00)
 ```
 
 
-## 📦 Dependencies
+## Dependencies
 
 - [`pylint`](https://pypi.org/project/pylint/) : Static code analyser.
 - [`PyYAML`](https://pypi.org/project/PyYAML/) : Yaml parser.
