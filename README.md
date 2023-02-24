@@ -161,17 +161,19 @@ $ azstudenv --help
 
 If you would like to run **AzStudenv** from anywhere follow steps below :
 
-* Make the `main.py` file executable.
+* Make the `azstudenv` file executable.
     ```shell
-    $ chmod +x AzStudenv/azstudenv/main.py
+    $ chmod +x ~/pathto/AzStudenv/azstudenv/azstudenv
     ```
 
-* Create a [symbolic link](https://en.wikipedia.org/wiki/Symbolic_link) in `/bin/`.
+* Create a [symbolic link](https://en.wikipedia.org/wiki/Symbolic_link) in `/usr/local/bin/`.
     ```
-    $ sudo ln -s AzStudenv/azstudenv/main.py azstudenv
+    $ sudo ln -s ~/pathto/AzStudenv/azstudenv/azstudenv
     ```
 
-* Now you can use **AzStudenv** from anywhere in your terminal.
+* If you would like to do so, install the required libraries on your local machine.
+
+Now you can run **azstudenv** from everywhere in your terminal.
 
 
 ## 🔬 Linting
