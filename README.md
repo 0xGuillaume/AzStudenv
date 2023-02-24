@@ -110,9 +110,9 @@ $ python3 -m pip install -r requirements.txt
 
 In order to configure your personal settings such as :
 
-- Your Azure subscription.
-- The Path of your SSH public key.
-- The name of the user you will use on your Azure Linux environment.
+1. Your Azure subscription.
+1. The Path of your SSH public key.
+1. The name of the user you will use on your Azure Linux environment.
 
 ```bash
 azstudenv config \
@@ -125,9 +125,9 @@ azstudenv config \
 
 Then you have to setup your desire Azure Linux environment with the following options :
 	
-- Amount of instances you would like to create `[1, 2, 3]`.
-- Linux distribution you would like to work on `["debian", "rhel", "ubuntu"]`.
-- The name of your POC/project.
+1. Amount of instances you would like to create `[1, 2, 3]`.
+1. Linux distribution you would like to work on `["debian", "rhel", "ubuntu"]`.
+1. The name of your POC/project.
 
 ```bash
 $ azstudenv infra --amount 2 --image debian --poc foopoc
