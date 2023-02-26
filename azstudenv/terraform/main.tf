@@ -70,4 +70,34 @@ resource "azurerm_linux_virtual_machine" "main" {
     caching              = "ReadWrite"
     storage_account_type = "Standard_LRS"
   }
+
+  connection {
+    type        = "ssh"
+    user        = local.config["vm"]["admin_username"]
+    host        = self.public_ip_address
+    private_key = "${file("/home/jimbo/.ssh/id_rsa")}" #"${local.config["idrsa"]}"
+    timeout     = "2m"
+  }
+
+  provisioner "file" {
+    source      = "./scripts/setup.sh"
+    destination = "/home/${local.config["vm"]["admin_username"]}/setup.sh"
+  }
+
+  provisioner "file" {
+    source      = "./scripts/.vimrc"
+    destination = "/home/${local.config["vm"]["admin_username"]}/.vimrc"
+  }
+
+  provisioner "file" {
+    source      = "./scripts/motd"
+    destination = "/tmp/motd"
+  }
+
+ provisioner "remote-exec" {
+    inline = [
+     "bash /home/${local.config["vm"]["admin_username"]}/setup.sh"
+    ]
+  }
 }
+
