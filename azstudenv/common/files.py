@@ -83,7 +83,7 @@ class Output:
             message: Content of the log message.
         """
 
-        output = f"[cyan][INFO] [AZSTUDENV] {message}"
+        output = f"[cyan][INFO] {message}"
 
         return console.log(output)
 
