@@ -1,0 +1,14 @@
+idrsa: /home/user/.ssh/id_rsa.pub
+instances: null
+location: FranceCentral
+poc: null
+subscription: 00000000-0000-0000-0000-000000000000
+suffix: null
+vm:
+  admin_username: student
+  image:
+    offer: null
+    publisher: null
+    sku: null
+    version: null
+  size: Standard_B1s
