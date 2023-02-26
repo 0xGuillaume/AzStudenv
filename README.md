@@ -9,7 +9,7 @@
 
 **AzStudenv** (_Azure Studenv Environment_) is a tool that create an **IaaS** Azure Linux environment for tests and development purpose. This tool has mainly been designed for Azure Student subscriptions but works with a standard subscription as well. 
 
-You can create up to **3 virtual machines** with the **same** image whatever virtual machines amount needed :
+You can setup your environment up to **3 virtual machines** with the **same** image whatever virtual machines amount needed :
 
 - Debian 11
 
@@ -17,10 +17,9 @@ You can create up to **3 virtual machines** with the **same** image whatever vir
 
 - Red Hat Linux Entreprise 8
 
+📢 **Attention**, you will be charged creating and using Azure services.
+
 ---
-
-**Attention**, you will be charged creating and using Azure services.
-
 
 
 ## Prerequisites
@@ -78,7 +77,7 @@ You have logged in. Now let us find all the subscriptions to which you have acce
 ]
 ```
 
-You **will need** the `id` key corresponding to your Azure Subscription in order to setup **AzStudenv** `yaml` configuration file.
+You **will need** the `id` key corresponding to your Azure Subscription in order to configure **AzStudenv**.
 
 
 ## Installation
@@ -89,6 +88,7 @@ Clone **AzStudenv** git repositoriy locally.
 $ git clone https://github.com/0xGuillaume/AzStudenv.git
 ```
 
+1. Use the tool from its directory.
 Create python virtual environment and install required libraries.
 
 ```shell
@@ -97,6 +97,17 @@ $ python3 -m venv env
 $ source env/bin/activate
 
 $ python3 -m pip install -r requirements.txt
+```
+
+2. Use the tool from anywhere.
+```shell
+$ python3 -m pip install -r requirements.txt
+
+$ chmod +x ./AzStudenv/azstudenv/azstudenv
+
+$ cd /bin/usr/local
+
+$ sudo ln -s /path/to/AzStudenv/azstudenv/azstudenv
 ```
 
 
