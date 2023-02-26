@@ -88,7 +88,7 @@ Clone **AzStudenv** git repositoriy locally.
 $ git clone https://github.com/0xGuillaume/AzStudenv.git
 ```
 
-1. Use the tool from its directory:
+1. **Use the tool from its directory:**
 Create python virtual environment and install required libraries.
 
 ```shell
@@ -99,7 +99,7 @@ $ source env/bin/activate
 $ python3 -m pip install -r requirements.txt
 ```
 
-2. Use the tool from anywhere: Make the `azstudenv` file executable and
+2. **Use the tool from anywhere:** Make the `azstudenv` file executable and
 create a [symbolic link](https://en.wikipedia.org/wiki/Symbolic_link) in `/usr/local/bin/`.
 ```shell
 $ python3 -m pip install -r requirements.txt
@@ -110,7 +110,6 @@ $ cd /bin/usr/local
 
 $ sudo ln -s /path/to/AzStudenv/azstudenv/azstudenv
 ```
-
 
 ## Configuration
 
