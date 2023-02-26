@@ -17,7 +17,7 @@ You can setup your environment up to **3 virtual machines** with the **same** im
 
 - Red Hat Linux Entreprise 8
 
-📢 **Attention**, you will be charged creating and using Azure services.
+📢  **Attention**, you will be charged creating and using Azure services.
 
 ---
 
