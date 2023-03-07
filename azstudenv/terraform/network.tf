@@ -1,11 +1,25 @@
 # Azure dedicated network resources
 
+
+# DDOS protection plan
+resource "azurerm_network_ddos_protection_plan" "main" {
+  name                = "${local.config["suffix"]}_DDOS_Plan"
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+}
+
+
 # Virtual Network
 resource "azurerm_virtual_network" "main" {
   name                = "${local.config["suffix"]}_VNET"
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
+  ddos_protection_plan {
+    id     = azurerm_network_ddos_protection_plan.main.id
+    enable = true
+
+  }
 }
 
 
